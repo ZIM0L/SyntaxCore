@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using SyntaxCore.Infrastructure;
+using SyntaxCore.Infrastructure.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructureServices();
+
 
 builder.Services.AddCors(options =>
 {
@@ -23,6 +26,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddMvc();
 
+builder.Services.AddDbContext<MyDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
