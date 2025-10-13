@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZYkgCizy4Qo=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\sylzy\\source\\repos\\SyntaxCore\\SyntaxCore\\SyntaxCore.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sylzy\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.9\\microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
+    "C:\\Users\\sylzy\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\sylzy\\.nuget\\packages\\scalar.aspnetcore\\2.8.11\\scalar.aspnetcore.2.8.11.nupkg.sha512"
+  ],
+  "logs": []
+}

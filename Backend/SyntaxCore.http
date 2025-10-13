@@ -1,0 +1,6 @@
+@SyntaxCore_HostAddress = http://localhost:5140
+
+GET {{SyntaxCore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
