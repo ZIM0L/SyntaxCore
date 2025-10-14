@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using SyntaxCore.Infrastructure.DbContext;
+using SyntaxCore.Infrastructure.Middlewares;
 using SyntaxCore.Infrastructure.ServiceCollection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,16 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));
 });
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    await DatabaseChecker.CheckDatabaseConnection(dbContext, logger);
+}
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
