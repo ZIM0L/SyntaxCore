@@ -1,9 +1,12 @@
-using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SyntaxCore.Application.Authentication.Commands;
 using SyntaxCore.Entities;
 using SyntaxCore.Interfaces;
 using SyntaxCore.Models;
+using System.Security.Claims;
+using SyntaxCore.Application.Authentication.Queries;
 
 namespace SyntaxCore.Controllers;
 
@@ -12,34 +15,35 @@ namespace SyntaxCore.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IJwtTokenService _jwtTokenService;
-    private static readonly User _user = new();
-    public AuthController(IJwtTokenService jwtTokenService)
+    private readonly IMediator _mediator;
+
+    public AuthController(IJwtTokenService jwtTokenService, IMediator mediator)
     {
         _jwtTokenService = jwtTokenService;
+        _mediator = mediator;
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] UserDto userDto)
+    public async Task<IActionResult> Register([FromBody] UserDto userDto)
     {
-        var hashedPassword = new PasswordHasher<User>()
-            .HashPassword(_user, userDto.Password);
-        
-        _user.Username = userDto.Username;
-        _user.PasswordHash = hashedPassword;
+        var request = new RegisterUserRequest(userDto.Username, userDto.Password, userDto.Email);
+        var result = await _mediator.Send(request);
 
-        return Ok(_user);
+        if (result.)
+        {
+            return BadRequest("User already exists.");
+        }
+        return Ok(result);
     }
     [HttpPost("login")]
     public IActionResult Login([FromBody] UserDto userDto)
      {
-         var result = new PasswordHasher<User>().VerifyHashedPassword(_user, _user.PasswordHash, userDto.Password);
-         if (result == PasswordVerificationResult.Failed)
-         {
-             return Unauthorized();
-         }
-
-         var token = _jwtTokenService.GenerateToken(_user);
-
-         return Ok(token);
+        var request = new LoginUserRequest(userDto.Email, userDto.Password);
+        var token = _mediator.Send(request).Result;
+        if (token.Equals(string.Empty))
+        {
+            return Unauthorized("Invalid credentials.");
+        }
+        return Ok(token);
      }
 }

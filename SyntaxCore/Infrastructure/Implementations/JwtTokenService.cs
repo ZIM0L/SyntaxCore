@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using SyntaxCore.Entities;
 using SyntaxCore.Interfaces;
 
-namespace SyntaxCore.Infrastructure;
+namespace SyntaxCore.Infrastructure.Implementations;
 public class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _configuration;
@@ -33,7 +33,7 @@ public class JwtTokenService : IJwtTokenService
             issuer: _configuration.GetValue<string>("JWT:Issuer"),
             audience: _configuration.GetValue<string>("JWT:Audience"),
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Int32.Parse(_configuration.GetValue<string>("JWT:AccessTokenExpiresMinutes")!)), 
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration.GetValue<string>("JWT:AccessTokenExpiresMinutes")!)), 
             signingCredentials: credentials
         );
 

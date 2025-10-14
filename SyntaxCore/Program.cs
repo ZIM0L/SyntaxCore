@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using SyntaxCore.Infrastructure;
 using SyntaxCore.Infrastructure.DbContext;
+using SyntaxCore.Infrastructure.ServiceCollection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddDependencyService();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddRepositoriesServices();
 
 
 builder.Services.AddCors(options =>
