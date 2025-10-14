@@ -12,7 +12,7 @@ namespace SyntaxCore.Repositories.UserRepository
         /// <summary>
         /// Gets a user by their username and email.
         /// </summary>
-        Task<User?> GetUserByUsername(string username, string email);
+        Task<User?> GetUserByEmail(string email);
 
         /// <summary>
         /// Adds a new user to the database.

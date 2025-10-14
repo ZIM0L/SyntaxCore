@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using SyntaxCore.Entities;
+using SyntaxCore.Infrastructure.Implementations;
 using SyntaxCore.Interfaces;
 using SyntaxCore.Models;
 using SyntaxCore.Repositories.UserRepository;
@@ -19,18 +20,13 @@ namespace SyntaxCore.Application.Authentication.Queries
         }
         public async Task<string> Handle(LoginUserRequest request, CancellationToken cancellationToken)
         {
-            string token = string.Empty;
-            User? user = await _userRepository.GetUserByUsername(request.Email, request.Password);
+            User? user = await _userRepository.GetUserByEmail(request.Email);
 
-            if (user != null)
+            if (user is not null && user.VerifyPassword(request.Password) == PasswordVerificationResult.Success)
             {
-                var result = new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password);
-                if (result == PasswordVerificationResult.Failed)
-                {
-                    return _jwtTokenService.GenerateToken(user);
-                }
+                return _jwtTokenService.GenerateToken(user);
             }
-            return String.Empty;
+            return string.Empty;
         }
     }
 }

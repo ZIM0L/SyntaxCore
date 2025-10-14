@@ -14,12 +14,12 @@ namespace SyntaxCore.Repositories.UserRepository
 
         public async Task<bool> IsUserExists(User user)
         {
-            return await _context.Users.AnyAsync(u => u.Username == user.Username && u.Email == user.Email);
+            return await _context.Users.AnyAsync(u => u.Email == user.Email);
         }
 
-        public async Task<User?> GetUserByUsername(string username, string email)
+        public async Task<User?> GetUserByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> AddUser(User user)
