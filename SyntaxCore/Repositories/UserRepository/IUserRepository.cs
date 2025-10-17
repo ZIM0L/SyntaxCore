@@ -1,4 +1,4 @@
-﻿using SyntaxCore.Entities;
+﻿using SyntaxCore.Entities.UserRelated;
 
 namespace SyntaxCore.Repositories.UserRepository
 {

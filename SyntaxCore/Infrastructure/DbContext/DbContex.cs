@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SyntaxCore.Entities;
+using SyntaxCore.Entities.UserRelated;
 
 namespace SyntaxCore.Infrastructure.DbContext;
 

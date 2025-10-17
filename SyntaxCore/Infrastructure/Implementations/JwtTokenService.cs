@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SyntaxCore.Entities;
+using SyntaxCore.Entities.UserRelated;
 using SyntaxCore.Interfaces;
 
 namespace SyntaxCore.Infrastructure.Implementations;

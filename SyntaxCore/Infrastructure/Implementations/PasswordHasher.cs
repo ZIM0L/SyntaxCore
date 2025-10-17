@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SyntaxCore.Entities;
+using SyntaxCore.Entities.UserRelated;
 
 namespace SyntaxCore.Infrastructure.Implementations
 {

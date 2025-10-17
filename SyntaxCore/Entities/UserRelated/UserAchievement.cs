@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace SyntaxCore.Entities
+namespace SyntaxCore.Entities.UserRelated
 {
     [Table("UserAchievements")]
     [Comment("Tracks user progress towards achievements.")]
     [PrimaryKey(nameof(UserId), nameof(AchievementId))]
     public class UserAchievement
     {
-        [ForeignKey(nameof(User))]
         public int UserId { get; set; }
 
         public int AchievementId { get; set; }
@@ -19,6 +18,6 @@ namespace SyntaxCore.Entities
         public DateTime? EarnedAt { get; set; }
 
         public User User { get; set; }
-        //public Achievement Achievement { get; set; }
+        public Achievement Achievement { get; set; }
     }
 }

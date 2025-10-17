@@ -1,6 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
-using SyntaxCore.Entities;
+using SyntaxCore.Entities.UserRelated;
 using SyntaxCore.Infrastructure.DbContext;
 
 namespace SyntaxCore.Repositories.UserRepository
