@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using SyntaxCore.Infrastructure.DbContext;
 using SyntaxCore.Infrastructure.Middlewares;
 using SyntaxCore.Infrastructure.ServiceCollection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,21 @@ builder.Services.AddDependencyService();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddRepositoriesServices();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+{
+    opt.RequireHttpsMetadata = false; // Set to true in production
+    opt.SaveToken = true; // Save the token in the AuthenticationProperties after a successful authorization
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration.GetValue<string>("JWT:Issuer"),
+        ValidateAudience = true,
+        ValidAudiences = builder.Configuration.GetValue<string[]>("JWT:Audience"),
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:AccessTokenKey")!)),
+        ValidateIssuerSigningKey = true
+    };
+});
 
 builder.Services.AddCors(options =>
 {
@@ -53,6 +71,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
