@@ -1,26 +1,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace SyntaxCore.Entities.BattleRelated;
 
 [Table("Questions")]
+[Comment("Stores questions used in battles, including their category, difficulty, correct answer, and explanation.")]
 public class Question
 {
     [Key]
-    public int QuestionId { get; set; }
+    public Guid QuestionId { get; set; } = Guid.NewGuid();
 
     [MaxLength(255)]
-    public string Category { get; set; }
+    public string Category { get; set; } = string.Empty;
 
     public int Difficulty { get; set; }
 
-    public string QuestionText { get; set; }
+    public string QuestionText { get; set; } = string.Empty;
 
-    public string CorrectAnswer { get; set; }
+    public string CorrectAnswer { get; set; } = string.Empty;
 
-    public string Explanation { get; set; }
+    public string Explanation { get; set; } = string.Empty;
 
-    public ICollection<AnswerToQuestions> Answers { get; set; }
-    public ICollection<Comment> Comments { get; set; }
-    public ICollection<QuestionFlag> Flags { get; set; }
+    public ICollection<AnswerToQuestions> Answers { get; set; } = null!;
+    public ICollection<Comment> Comments { get; set; } = null!;
+    public ICollection<QuestionFlag> Flags { get; set; } = null!;
 }

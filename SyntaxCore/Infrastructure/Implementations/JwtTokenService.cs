@@ -23,6 +23,7 @@ public class JwtTokenService : IJwtTokenService
             new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
             new Claim("level", user.Level.ToString()),  
+            new Claim("role", user.Role ?? "player")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:AccessTokenKey")!));

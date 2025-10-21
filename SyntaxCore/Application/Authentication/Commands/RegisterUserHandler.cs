@@ -1,7 +1,6 @@
 ﻿
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using SyntaxCore.Entities;
+using SyntaxCore.Entities.UserRelated;
 using SyntaxCore.Infrastructure.Implementations;
 using SyntaxCore.Interfaces;
 using SyntaxCore.Repositories.UserRepository;

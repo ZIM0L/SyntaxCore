@@ -5,19 +5,22 @@ namespace SyntaxCore.Entities.UserRelated
 {
     [Table("UserAchievements")]
     [Comment("Tracks user progress towards achievements.")]
-    [PrimaryKey(nameof(UserId), nameof(AchievementId))]
+    [PrimaryKey(nameof(UserFK), nameof(AchievementFK))]
     public class UserAchievement
     {
-        public int UserId { get; set; }
+        public Guid UserFK { get; set; }
 
-        public int AchievementId { get; set; }
+        public Guid AchievementFK { get; set; }
 
         public int ProgressCurrent { get; set; }
         public int ProgressGoal { get; set; }
         public bool IsCompleted { get; set; }
-        public DateTime? EarnedAt { get; set; }
+        public DateTime EarnedAt { get; set; }
 
-        public User User { get; set; }
-        public Achievement Achievement { get; set; }
+        // Navigation
+        [ForeignKey(nameof(UserFK))]
+        public User User { get; set; } = null!;
+        [ForeignKey(nameof(AchievementFK))]
+        public Achievement Achievement { get; set; } = null!;
     }
 }
