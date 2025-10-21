@@ -1,13 +1,15 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SyntaxCore.Application.Authentication.Commands;
+using SyntaxCore.Application.Authentication.Commands.RefreshToken;
+using SyntaxCore.Application.Authentication.Commands.Register;
+using SyntaxCore.Application.Authentication.Queries.Login;
 using SyntaxCore.Interfaces;
 using SyntaxCore.Models;
-using SyntaxCore.Application.Authentication.Queries;
 
 namespace SyntaxCore.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase
 {
@@ -37,10 +39,18 @@ public class AuthController : ControllerBase
      {
         var request = new LoginUserRequest(loginUserDto.Email, loginUserDto.Password);
         var token = _mediator.Send(request).Result;
-        if (token.Equals(string.Empty))
+        if (token.AccessToken.Equals(string.Empty))
         {
             return Unauthorized("Invalid credentials.");
         }
         return Ok(token);
      }
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> TestAuth([FromBody] RefreshTokenDto refreshTokenDto)
+    {
+        var request = new RefreshTokenRequest(refreshTokenDto.RefreshToken);
+        var result = await _mediator.Send(request);
+        return Ok(result);
+    }
+
 }

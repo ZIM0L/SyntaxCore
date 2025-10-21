@@ -29,6 +29,8 @@ public class User
     public int Wins { get; set; } = 0;            
     public int Losses { get; set; } = 0;          
     public bool IsPublicProfile { get; set; } = true;
+    public string? RefreshToken { get; set; } = string.Empty;
+    public DateTime? RefreshTokenExpiryDateTime { get; set; }
 
     // Navigation
     public ICollection<UserLogin> UserLogins { get; set; } = null!;

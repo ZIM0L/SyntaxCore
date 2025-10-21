@@ -18,5 +18,18 @@ namespace SyntaxCore.Repositories.UserRepository
         /// Adds a new user to the database.
         /// </summary>
         Task<User> AddUser(User user);
+
+        /// <summary>
+        /// Updates user 
+        /// </summary>
+        /// <param name="user"></param>
+        Task UpdateUser(User user);
+
+        /// <summary>
+        /// Gets user by his refresh token
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <returns></returns>
+        Task<User?> GetUserByRefreshToken(string refreshToken);
     }
 }

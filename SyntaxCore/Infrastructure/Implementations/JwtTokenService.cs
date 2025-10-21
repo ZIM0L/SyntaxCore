@@ -1,10 +1,10 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using SyntaxCore.Entities.UserRelated;
 using SyntaxCore.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SyntaxCore.Infrastructure.Implementations;
 public class JwtTokenService : IJwtTokenService
@@ -28,7 +28,7 @@ public class JwtTokenService : IJwtTokenService
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:AccessTokenKey")!));
 
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
             issuer: _configuration.GetValue<string>("JWT:Issuer"),
@@ -41,8 +41,11 @@ public class JwtTokenService : IJwtTokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken(string token)
+    public string GenerateRefreshToken()
     {
-        throw new NotImplementedException();
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

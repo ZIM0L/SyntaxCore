@@ -9,10 +9,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddDependencyService();
@@ -28,10 +25,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuer = true,
         ValidIssuer = builder.Configuration.GetValue<string>("JWT:Issuer"),
         ValidateAudience = true,
-        ValidAudiences = builder.Configuration.GetValue<string[]>("JWT:Audience"),
+        ValidAudience = builder.Configuration.GetValue<string>("JWT:Audience"),
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:AccessTokenKey")!)),
-        ValidateIssuerSigningKey = true
+        ValidateIssuerSigningKey = true,
+        ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
     };
 });
 
