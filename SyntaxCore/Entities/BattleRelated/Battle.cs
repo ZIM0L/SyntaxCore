@@ -1,36 +1,30 @@
 using SyntaxCore.Entities.UserRelated;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace SyntaxCore.Entities.BattleRelated;
 
 [Table("Battles")]
+[Comment("Records of battles between players, including participants, outcomes, and timestamps.")]
 public class Battle
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int BattleId { get; set; }
-    [ForeignKey("PlayerFK1")]
-    [Required]
-    public int PlayerId1 { get; set; }
-    [ForeignKey("PlayerFK2")]
-    [Required]
-    public int PlayerId2 { get; set; }
-
-    [ForeignKey("PlayerWinnerFK")]
-    public int? PlayerWinnerId { get; set; }
+    public Guid BattleId { get; set; } = Guid.NewGuid();
+    public Guid? PlayerWinnerFK { get; set; }
 
     [MaxLength(255)]
-    public string Category { get; set; }
+    public string Category { get; set; } = string.Empty;
 
     public DateTime StartedAt { get; set; }
     public DateTime EndedAt { get; set; }
 
     [MaxLength(50)]
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 
-    public User Player1 { get; set; }
-    public User Player2 { get; set; }
-    public User PlayerWinner { get; set; }
+    // Navigation
+    [ForeignKey(nameof(PlayerWinnerFK))]
+    public User? PlayerWinner { get; set; }
 
+    public ICollection<BattleParticipant> BattleParticipant { get; set; } = new List<BattleParticipant>();
 }

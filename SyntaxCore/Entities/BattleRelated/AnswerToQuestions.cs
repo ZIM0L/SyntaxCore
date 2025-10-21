@@ -1,29 +1,31 @@
 using SyntaxCore.Entities.UserRelated;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace SyntaxCore.Entities.BattleRelated;
 
 [Table("Answers")]
+[Comment("Stores answers provided by users to questions during battles.")]
 public class AnswerToQuestions
 {
     [Key]
-    public int AnswerId { get; set; }
+    public Guid AnswerId { get; set; } = Guid.NewGuid();
+    public Guid BattleFK { get; set; }
+    public Guid QuestionFK { get; set; }
+    public Guid UserFK { get; set; }
 
-    [ForeignKey("BattleFK")]
-    public int BattleId { get; set; }
-
-    [ForeignKey("QuestionFK")]
-    public int QuestionId { get; set; }
-
-    [ForeignKey("UserFK")]
-    public int UserId { get; set; }
-
-    public string AnswerText { get; set; }
+    public string AnswerText { get; set; } = string.Empty;
     public bool IsCorrect { get; set; }
     public DateTime AnswerAt { get; set; }
 
-    public Battle Battle { get; set; }
-    public Question Question { get; set; }
-    public User User { get; set; }
+    // Navigation 
+    [ForeignKey(nameof(BattleFK))]
+    public Battle Battle { get; set; } = null!;
+
+    [ForeignKey(nameof(QuestionFK))]
+    public Question Question { get; set; } = null!;
+
+    [ForeignKey(nameof(UserFK))]
+    public User User { get; set; } = null!;
 }

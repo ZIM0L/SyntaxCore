@@ -22,8 +22,8 @@ public class User
     [MaxLength(50)]
     public string? Role { get; set; } = string.Empty;
     [Precision(0)]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
-
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [Column("UserLevel")]
     public int Level { get; set; } = 1;            
     public int Experience { get; set; } = 0;       
     public int Wins { get; set; } = 0;            
@@ -31,15 +31,15 @@ public class User
     public bool IsPublicProfile { get; set; } = true;
 
     // Navigation
-    public ICollection<UserLogin> UserLogins { get; set; }
-    public ICollection<UserXpLog> XPLogs { get; set; }
-    public ICollection<Battle> currentBattleId { get; set; }
-    public ICollection<Battle> BattlesWon { get; set; }
-    public ICollection<Achievement> UserAchievements { get; set; }
-    public ICollection<Comment> Comments { get; set; }
-    public ICollection<BlogPost> BlogPosts { get; set; }
-    public ICollection<AnswerToQuestions> Answers { get; set; }
-    public ICollection<QuestionFlag> QuestionFlags { get; set; }
-    public ICollection<QuestionFlag>? ReviewedFlags { get; set; }
+    public ICollection<UserLogin> UserLogins { get; set; } = null!;
+    public ICollection<UserXpLog> XPLogs { get; set; } = null!;
+    public ICollection<Battle> BattlesWon { get; set; } = null!;
+    public ICollection<Achievement> UserAchievements { get; set; } = null!;
+    public ICollection<Comment> Comments { get; set; } = null!;
+    public ICollection<BlogPost> BlogPosts { get; set; } = null!;
+    public ICollection<AnswerToQuestions> Answers { get; set; } = null!;
+    public ICollection<QuestionFlag> QuestionFlags { get; set; } = null!;
+    public ICollection<QuestionFlag>? ReviewedFlags { get; set; } = null!;
+    public ICollection<BattleParticipant>? BattleParticipants { get; set; } = null!;
 
 }
