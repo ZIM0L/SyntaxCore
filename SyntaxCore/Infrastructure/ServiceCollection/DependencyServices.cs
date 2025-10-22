@@ -4,7 +4,8 @@
     {
         public static IServiceCollection AddDependencyService(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyServices).Assembly));
+            services.AddMediatR(cfg => 
+                cfg.RegisterServicesFromAssembly(typeof(DependencyServices).Assembly));
             return services;
         }
     }
