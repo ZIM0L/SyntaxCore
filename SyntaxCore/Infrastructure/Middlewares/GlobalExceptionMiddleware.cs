@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using SendGrid.Helpers.Errors.Model;
+using SyntaxCore.Infrastructure.ErrorExceptions;
 
 namespace SyntaxCore.Infrastructure.Middlewares
 {
@@ -18,20 +18,20 @@ namespace SyntaxCore.Infrastructure.Middlewares
             }
             catch (Exception exception)
             {
-                await HandleExceptionAsync(context, exception);
+                var exceptionToHandle = (exception is AggregateException aggEx)
+                    ? aggEx.Flatten().InnerExceptions.FirstOrDefault() ?? exception
+                    : exception;
+
+                await HandleExceptionAsync(context, exceptionToHandle);
             }
         }
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            HttpStatusCode status;
             string errorMessage = exception.Message;
-            status = exception switch
+            var status = exception switch
             {
-                UnauthorizedAccessException => HttpStatusCode.Unauthorized,
-                BadHttpRequestException => HttpStatusCode.BadRequest,
-                ArgumentNullException => HttpStatusCode.BadRequest,
                 ArgumentException => HttpStatusCode.BadRequest,
                 NotFoundException => HttpStatusCode.NotFound,
                 ForbiddenException => HttpStatusCode.Forbidden,
@@ -39,17 +39,19 @@ namespace SyntaxCore.Infrastructure.Middlewares
                 DbUpdateConcurrencyException => HttpStatusCode.Conflict,
                 _ => HttpStatusCode.InternalServerError
             };
+            if (status == HttpStatusCode.InternalServerError)
+            {
+                _logger.LogError(exception, "Unhandled exception occurred");
+            }
 
             context.Response.StatusCode = (int)status;
             var errorResponse = new
             {
                 Success = false,
-                Message = errorMessage,
                 StatusCode = context.Response.StatusCode,
-                ErrorDetails = exception.StackTrace,
                 Detail = exception.Message
             };
-            _logger.LogError(exception, errorResponse.Message);
+            _logger.LogError(exception, "Exception occurred");
             await context.Response.WriteAsJsonAsync(errorResponse);
         }
     }

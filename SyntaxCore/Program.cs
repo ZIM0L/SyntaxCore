@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,10 +10,13 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load();
+var license = Environment.GetEnvironmentVariable("MEDIATR_LICENSE");
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-builder.Services.AddDependencyService();
+builder.Services.AddDependencyService(license);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddRepositoriesServices();
 
@@ -32,6 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
     };
 });
+
 
 builder.Services.AddCors(options =>
 {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using SendGrid.Helpers.Errors.Model;
 using SyntaxCore.Entities.UserRelated;
+using SyntaxCore.Infrastructure.ErrorExceptions;
 using SyntaxCore.Infrastructure.Implementations;
 using SyntaxCore.Interfaces;
 using SyntaxCore.Models;
@@ -32,7 +32,7 @@ namespace SyntaxCore.Application.Authentication.Queries.Login
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiryDateTime = DateTime.UtcNow.AddDays(tokenExpires);
                 await userRepository.UpdateUser(user);
-
+                return tokenResponse;
             }
             throw new NotFoundException("Invalid Credentials");
         }
