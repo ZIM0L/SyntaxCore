@@ -39,5 +39,10 @@ namespace SyntaxCore.Repositories.UserRepository
         {
             return await _context.Users.FirstOrDefaultAsync( u => u.RefreshToken!.Equals(refreshToken));
         }
+
+        public async Task<User?> GetUserById(Guid userId)
+        {
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+        }
     }
 }

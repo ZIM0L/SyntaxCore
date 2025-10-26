@@ -22,9 +22,9 @@ public class Battle
 
     [MaxLength(255)]
     public string Category { get; set; } = string.Empty;
-
-    public DateTime StartedAt { get; set; }
-    public DateTime EndedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? StartedAt { get; set; }
+    public DateTime? EndedAt { get; set; }
 
     [MaxLength(50)]
     public string Status { get; set; } = string.Empty;

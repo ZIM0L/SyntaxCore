@@ -20,9 +20,10 @@ public class JwtTokenService : IJwtTokenService
     {
         var claims = new[]
         {
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-            new Claim("level", user.Level.ToString()),  
+            new Claim("level", user.Level.ToString()),
             new Claim("role", user.Role ?? "player")
         };
 

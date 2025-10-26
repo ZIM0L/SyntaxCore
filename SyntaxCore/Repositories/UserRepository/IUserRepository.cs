@@ -10,9 +10,14 @@ namespace SyntaxCore.Repositories.UserRepository
         Task<bool> IsUserExists(User user);
 
         /// <summary>
-        /// Gets a user by their username and email.
+        /// Gets a user by their email.
         /// </summary>
         Task<User?> GetUserByEmail(string email);
+
+        /// <summary>
+        /// Gets a user by their id.
+        /// </summary>
+        Task<User?> GetUserById(Guid userId);
 
         /// <summary>
         /// Adds a new user to the database.
