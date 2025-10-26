@@ -21,6 +21,7 @@ public class Question
     public string CorrectAnswer { get; set; } = string.Empty;
 
     public string Explanation { get; set; } = string.Empty;
+    public int TimeForAnswerInSeconds { get; set; }
 
     public ICollection<AnswerToQuestions> Answers { get; set; } = null!;
     public ICollection<Comment> Comments { get; set; } = null!;
