@@ -11,6 +11,7 @@ public class Battle
 {
     [Key]
     public Guid BattleId { get; set; } = Guid.NewGuid();
+    public string BattleName { get; set; } = string.Empty;
     public Guid? PlayerWinnerFK { get; set; }
 
     [MaxLength(255)]
@@ -21,6 +22,7 @@ public class Battle
 
     [MaxLength(50)]
     public string Status { get; set; } = string.Empty;
+    public int QuestionsCount { get; set; }
 
     // Navigation
     [ForeignKey(nameof(PlayerWinnerFK))]
