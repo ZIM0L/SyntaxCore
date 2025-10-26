@@ -9,6 +9,12 @@ namespace SyntaxCore.Entities.BattleRelated;
 [Comment("Records of battles between players, including participants, outcomes, and timestamps.")]
 public class Battle
 {
+    public Battle(string battleName, int questionsCount)
+    {
+        BattleName = battleName;
+        QuestionsCount = questionsCount;
+    }
+
     [Key]
     public Guid BattleId { get; set; } = Guid.NewGuid();
     public string BattleName { get; set; } = string.Empty;

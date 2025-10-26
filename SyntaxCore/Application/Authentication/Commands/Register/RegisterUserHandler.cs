@@ -4,7 +4,7 @@ using SyntaxCore.Application.Authentication.Queries.Login;
 using SyntaxCore.Entities.UserRelated;
 using SyntaxCore.Infrastructure.Implementations;
 using SyntaxCore.Interfaces;
-using SyntaxCore.Models;
+using SyntaxCore.Models.UserRelated;
 using SyntaxCore.Repositories.UserRepository;
 
 namespace SyntaxCore.Application.Authentication.Commands.Register;

@@ -5,7 +5,7 @@ using SyntaxCore.Application.Authentication.Commands.RefreshToken;
 using SyntaxCore.Application.Authentication.Commands.Register;
 using SyntaxCore.Application.Authentication.Queries.Login;
 using SyntaxCore.Interfaces;
-using SyntaxCore.Models;
+using SyntaxCore.Models.UserRelated;
 
 namespace SyntaxCore.Controllers;
 

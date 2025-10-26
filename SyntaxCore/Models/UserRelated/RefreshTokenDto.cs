@@ -1,4 +1,4 @@
-﻿namespace SyntaxCore.Models
+﻿namespace SyntaxCore.Models.UserRelated
 {
     public class RefreshTokenDto
     {

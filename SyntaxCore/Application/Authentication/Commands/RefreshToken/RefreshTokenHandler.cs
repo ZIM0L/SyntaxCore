@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SyntaxCore.Interfaces;
-using SyntaxCore.Models;
+using SyntaxCore.Models.UserRelated;
 using SyntaxCore.Repositories.UserRepository;
 
 namespace SyntaxCore.Application.Authentication.Commands.RefreshToken

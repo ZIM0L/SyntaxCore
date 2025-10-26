@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementy rozwiązania", "El
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxCore_SignalRTest", "..\SyntaxCore_SignalRTest\SyntaxCore_SignalRTest.csproj", "{277D83F2-F515-43D0-8910-BEFD8DC4F94B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,18 @@ Global
 		{C766A073-4C0A-4695-8523-E6A7A8C8E4DD}.Release|x64.Build.0 = Release|Any CPU
 		{C766A073-4C0A-4695-8523-E6A7A8C8E4DD}.Release|x86.ActiveCfg = Release|Any CPU
 		{C766A073-4C0A-4695-8523-E6A7A8C8E4DD}.Release|x86.Build.0 = Release|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Debug|x64.Build.0 = Debug|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Debug|x86.Build.0 = Debug|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x64.ActiveCfg = Release|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x64.Build.0 = Release|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x86.ActiveCfg = Release|Any CPU
+		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SyntaxCore.Models;
+using SyntaxCore.Models.UserRelated;
 
 namespace SyntaxCore.Application.Authentication.Commands.Register
 {

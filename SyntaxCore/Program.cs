@@ -6,6 +6,7 @@ using Scalar.AspNetCore;
 using SyntaxCore.Infrastructure.DbContext;
 using SyntaxCore.Infrastructure.Middlewares;
 using SyntaxCore.Infrastructure.ServiceCollection;
+using SyntaxCore.Infrastructure.SignalRHub;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ var license = Environment.GetEnvironmentVariable("MEDIATR_LICENSE");
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddDependencyService(license);
 builder.Services.AddInfrastructureServices();
@@ -82,5 +85,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<BattleHub>("/hubs/battle");
 
 app.Run();
