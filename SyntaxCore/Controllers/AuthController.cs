@@ -23,6 +23,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
     {
         var request = new RegisterUserRequest(registerUserDto.Username, registerUserDto.Password, registerUserDto.Email);
@@ -35,6 +36,7 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
     [HttpPost("login")]
+    [AllowAnonymous]
     public IActionResult Login([FromBody] LoginUserDto loginUserDto)
      {
         var request = new LoginUserRequest(loginUserDto.Email, loginUserDto.Password);
@@ -46,6 +48,7 @@ public class AuthController : ControllerBase
         return Ok(token);
      }
     [HttpPost("refresh-token")]
+    [AllowAnonymous]
     public async Task<IActionResult> TestAuth([FromBody] RefreshTokenDto refreshTokenDto)
     {
         var request = new RefreshTokenRequest(refreshTokenDto.RefreshToken);
