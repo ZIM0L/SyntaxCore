@@ -9,7 +9,18 @@ namespace SyntaxCore.Repositories.BattleRepository
         /// Creates a new battle record in the database.
         /// </summary>
         /// <param name="battle"></param>
-        /// <returns></returns>
         public Task<Battle> CreateBattle(Battle battle);
+
+        /// <summary>
+        /// Extracts all available battles based on the provided filters.
+        /// </summary>
+        /// <param name="categories"></param>
+        /// <param name="minQuestionsCount"></param>
+        /// <param name="maxQuestionsCount"></param>
+        public Task<List<Battle>> GetAllAvailableBattles(
+            List<string>? categories,
+            int? minQuestionsCount = null,
+            int? maxQuestionsCount = null
+        );
     }
 }

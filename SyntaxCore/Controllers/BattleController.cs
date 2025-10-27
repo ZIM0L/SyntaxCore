@@ -7,6 +7,8 @@ using SyntaxCore.Application.GameSession.Commands.CreateBattle;
 using SyntaxCore.Infrastructure.SignalRHub;
 using SyntaxCore.Models.BattleRelated;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SyntaxCore.Controllers
@@ -20,14 +22,10 @@ namespace SyntaxCore.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateBattle([FromBody] BattleCreationDto battleCreationDto)
         {
-            var userIdClaim = User.FindFirst("sub")?.Value;
-            if(string.IsNullOrEmpty(userIdClaim))
-            {
-                throw new ValidationException("User is not authorized");
-            }
+            var userIdClaim = (HttpContext.User.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var battle = new CreateBattleRequest(
-                Guid.Parse(userIdClaim),
+                Guid.Parse(userIdClaim!),
                 battleCreationDto.BattleName,
                 battleCreationDto.QuestionCount,
                 battleCreationDto.TimePerQuestion

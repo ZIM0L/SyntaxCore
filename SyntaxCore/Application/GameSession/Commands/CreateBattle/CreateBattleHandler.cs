@@ -16,8 +16,7 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
         public async Task<BattleDto> Handle(CreateBattleRequest request, CancellationToken cancellationToken)
         {
             var battleDto = new BattleDto();
-
-            if(await userRepository.GetUserById(request.UserId) is not User initPlayer)
+            if (await userRepository.GetUserById(request.UserId) is not User initPlayer)
             {
                 throw new NotFoundException("User not found");
             }
@@ -44,7 +43,7 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
                 QuestionsCount = battle.QuestionsCount
             };
 
-            await hubContext.Clients.Group($"battle-{battle.BattleName}").SendAsync("BattleCreated", battleDto);
+            await hubContext.Clients.All.SendAsync("BattleCreated", $" Battle created: battle-{battle.BattleName}");
 
             return battleDto;
         }

@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using SyntaxCore.Infrastructure.DbContext;
@@ -15,7 +16,9 @@ Env.Load();
 var license = Environment.GetEnvironmentVariable("MEDIATR_LICENSE");
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi( "v1", opt =>
+{
+});
 
 builder.Services.AddSignalR();
 
