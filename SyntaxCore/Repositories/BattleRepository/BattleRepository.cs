@@ -7,10 +7,7 @@ namespace SyntaxCore.Repositories.BattleRepository
 {
     public class BattleRepository : BaseRepository, IBattleRepository
     {
-        public BattleRepository(MyDbContext context) : base(context)
-        {
-            
-        }
+        public BattleRepository(MyDbContext context) : base(context) { }
 
         public async Task<Battle> CreateBattle(Battle battle)
         {

@@ -1,4 +1,5 @@
-﻿using SyntaxCore.Repositories.BattleRepository;
+﻿using SyntaxCore.Repositories.BattleParticipantRepository;
+using SyntaxCore.Repositories.BattleRepository;
 using SyntaxCore.Repositories.UserRepository;
 
 namespace SyntaxCore.Infrastructure.ServiceCollection
@@ -9,6 +10,7 @@ namespace SyntaxCore.Infrastructure.ServiceCollection
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBattleRepository, BattleRepository>();
+            services.AddScoped<IBattleParticipantRepository, BattleParticipantRepository>();
 
             return services;
         }

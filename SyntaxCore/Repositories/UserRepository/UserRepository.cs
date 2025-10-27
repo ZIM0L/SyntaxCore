@@ -7,11 +7,7 @@ namespace SyntaxCore.Repositories.UserRepository
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(MyDbContext context) : base(context)
-        {
-
-        }
-
+        public UserRepository(MyDbContext context) : base(context) { }
         public async Task<bool> IsUserExists(User user)
         {
             return await _context.Users.AnyAsync(u => u.Email == user.Email);
