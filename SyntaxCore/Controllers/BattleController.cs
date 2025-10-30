@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.CreateBattle;
+using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Infrastructure.SignalRHub;
 using SyntaxCore.Models.BattleRelated;
 using System.ComponentModel.DataAnnotations;
@@ -37,8 +38,15 @@ namespace SyntaxCore.Controllers
         }
         [HttpPost]
         [Route("join")]
-        public IActionResult JoinBattle()
+        public IActionResult JoinBattle([FromBody] BattleJoinDto battleJoinDto)
         {
+            var userIdClaim = (HttpContext.User.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var battleParticipant = new JoinBattleRequest(
+               Guid.Parse(userIdClaim!),
+               Guid.Parse(battleJoinDto.BattlePublicId)
+               );
+
             return Ok();
         }
         [HttpPost]

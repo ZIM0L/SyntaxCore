@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using SyntaxCore.Application.GameSession.Commands.AssignPlayersToBattle;
 using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Entities.UserRelated;
@@ -11,7 +12,7 @@ using SyntaxCore.Repositories.UserRepository;
 
 namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
 {
-    public class CreateBattleHandler(IBattleRepository battleRepository, IUserRepository userRepository,  IHubContext<BattleHub> hubContext) : IRequestHandler<CreateBattleRequest, BattleDto>
+    public class CreateBattleHandler(IBattleRepository battleRepository, IUserRepository userRepository,  IHubContext<BattleHub> hubContext, IMediator mediator) : IRequestHandler<CreateBattleRequest, BattleDto>
     {
         public async Task<BattleDto> Handle(CreateBattleRequest request, CancellationToken cancellationToken)
         {
@@ -32,9 +33,17 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
 
             battle = await battleRepository.CreateBattle(battle) ?? throw new ArgumentException("Battle could not be created");
 
+            var BattleParticipantRequest = new CreateNewBattleParticipantRequest(
+            request.UserId,
+            battle.BattleId,
+            BattleRole.Player
+            );
+
+            var battleParticipant = await mediator.Send(BattleParticipantRequest, cancellationToken);
+
             battleDto = new BattleDto
             {
-                BattleId = battle.BattleId,
+                BattleId = battle.BattlePublicId,
                 PlayerId1 = initPlayer.Username,
                 BattleName = battle.BattleName,
                 Category = battle.Category,
@@ -43,7 +52,8 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
                 QuestionsCount = battle.QuestionsCount
             };
 
-            await hubContext.Clients.All.SendAsync("BattleCreated", $" Battle created: battle-{battle.BattleName}");
+            await hubContext.Clients.All.SendAsync("BattleCreated", $" Battle created: battle-{battle.BattleName}", battleDto);
+            await hubContext.Clients.Group(battleDto.BattleId.ToString()).SendAsync("UserJoinedBattle", $"User {initPlayer.Username} has joined battle {battle.BattleName}");
 
             return battleDto;
         }

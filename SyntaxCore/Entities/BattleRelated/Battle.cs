@@ -17,6 +17,7 @@ public class Battle
 
     [Key]
     public Guid BattleId { get; set; } = Guid.NewGuid();
+    public Guid BattlePublicId { get; set; } = Guid.NewGuid();
     public string BattleName { get; set; } = string.Empty;
     public Guid? PlayerWinnerFK { get; set; }
 

@@ -12,13 +12,13 @@ namespace SyntaxCore.Application.GameSession.Commands.AssignPlayersToBattle
             {
                 UserFK = request.PlayerId,
                 BattleFK = request.BattleId,
+                Role = request.Role,
                 Score = 0
             };
 
             await battleParticipantRepository.AddBattleParticipantAsync(battleParticipant);
 
             // add error handling as needed
-
 
             return battleParticipant;
         }

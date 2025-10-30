@@ -34,5 +34,9 @@ namespace SyntaxCore.Repositories.BattleRepository
             return await query.ToListAsync();
         }
 
+        public Task<Battle?> GetBattleByPublicId(Guid battlePublicId)
+        {
+            return _context.Battles.FirstOrDefaultAsync(b => b.BattlePublicId == battlePublicId);
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace SyntaxCore.Models.BattleRelated
 {
     public class BattleDto
     {
-        public Guid BattleId { get; set; }        
+        public Guid BattleId { get; set; } = Guid.NewGuid();
         public string BattleName { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public int QuestionsCount { get; set; }

@@ -22,5 +22,11 @@ namespace SyntaxCore.Repositories.BattleRepository
             int? minQuestionsCount = null,
             int? maxQuestionsCount = null
         );
+
+        /// <summary>
+        /// Fetches a battle by its public identifier.
+        /// </summary>
+        /// <param name="battlePublicId"></param>
+        public Task<Battle?> GetBattleByPublicId(Guid battlePublicId);
     }
 }
