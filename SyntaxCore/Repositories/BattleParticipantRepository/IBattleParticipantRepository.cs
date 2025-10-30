@@ -13,6 +13,13 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
         /// <summary>
         /// Gets all battle participants for the given battle ids
         /// </summary>
-        Task<List<BattleParticipant>> GetParticipantsByBattleIds(List<Guid> battleIds);
+        public Task<List<BattleParticipant>> GetParticipantsByBattleIds(List<Guid> battleIds);
+        /// <summary>
+        /// Gets all battle participants count for the given battle id
+        /// <paramref name="battleid"/>
+        /// <returns>Returns list of participant of given battle id</returns>
+        /// </summary>
+        public Task<List<BattleParticipant>?> GetParticipantsCountByBattleId(Guid battleid);
+
     }
 }

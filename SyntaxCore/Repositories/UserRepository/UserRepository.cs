@@ -40,5 +40,10 @@ namespace SyntaxCore.Repositories.UserRepository
         {
             return await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
         }
+
+        public async Task<List<User>?> GetUsersByIds(List<Guid> userIds)
+        {
+            return await _context.Users.Where(u => userIds.Contains(u.UserId)).ToListAsync();
+        }
     }
 }

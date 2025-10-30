@@ -29,6 +29,7 @@ public class Battle
 
     [MaxLength(50)]
     public string Status { get; set; } = string.Empty;
+    public int maxPlayers { get; set; } = 2;
     public int QuestionsCount { get; set; }
 
     // Navigation

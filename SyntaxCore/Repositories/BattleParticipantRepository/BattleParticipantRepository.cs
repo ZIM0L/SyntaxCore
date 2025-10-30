@@ -20,5 +20,12 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
                 .Include(bp => bp.User)
                 .ToListAsync();
         }
+
+        public async Task<List<BattleParticipant>?> GetParticipantsCountByBattleId(Guid battleid)
+        {
+            return await _context.BattleParticipants
+                .Where(bp => bp.BattleFK == battleid)
+                .ToListAsync();
+        }
     }
 }

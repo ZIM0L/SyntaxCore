@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using SyntaxCore.Application.GameSession.Commands.AssignPlayersToBattle;
+using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Entities.UserRelated;
@@ -33,13 +33,13 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
 
             battle = await battleRepository.CreateBattle(battle) ?? throw new ArgumentException("Battle could not be created");
 
-            var BattleParticipantRequest = new CreateNewBattleParticipantRequest(
+            var joinBattleRequest = new JoinBattleRequest(
             request.UserId,
-            battle.BattleId,
+            battle.BattlePublicId,
             BattleRole.Player
             );
 
-            var battleParticipant = await mediator.Send(BattleParticipantRequest, cancellationToken);
+            await mediator.Send(joinBattleRequest, cancellationToken);
 
             battleDto = new BattleDto
             {

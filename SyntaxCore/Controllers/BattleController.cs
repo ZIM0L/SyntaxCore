@@ -37,19 +37,6 @@ namespace SyntaxCore.Controllers
             return Ok(result);
         }
         [HttpPost]
-        [Route("join")]
-        public IActionResult JoinBattle([FromBody] BattleJoinDto battleJoinDto)
-        {
-            var userIdClaim = (HttpContext.User.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var battleParticipant = new JoinBattleRequest(
-               Guid.Parse(userIdClaim!),
-               Guid.Parse(battleJoinDto.BattlePublicId)
-               );
-
-            return Ok();
-        }
-        [HttpPost]
         [Route("answer")]
         public IEnumerable<string> SendAnswers()
         {

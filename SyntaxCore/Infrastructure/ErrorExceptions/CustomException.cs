@@ -11,4 +11,9 @@
     /// <param name="message"></param>
     public class ForbiddenException(string message) : Exception(message);
 
+    /// <summary>
+    /// specific exception for joining battle errors
+    /// </summary>
+    /// <param name="message"></param>
+    public class JoinBattleException(string message) : Exception(message);
 }
