@@ -1,4 +1,6 @@
-﻿namespace SyntaxCore.Infrastructure.ErrorExceptions
+﻿using Microsoft.AspNetCore.SignalR;
+
+namespace SyntaxCore.Infrastructure.ErrorExceptions
 {
     /// <summary>
     /// Exception where send data was not found in database

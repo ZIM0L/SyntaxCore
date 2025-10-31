@@ -28,6 +28,11 @@ namespace SyntaxCore.Infrastructure.Middlewares
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            if (context.Response.HasStarted)
+            {
+                _logger.LogWarning("Response has already started, cannot modify headers for exception: {Message}", exception.Message);
+                return;
+            }
             context.Response.ContentType = "application/json";
             string errorMessage = exception.Message;
             var status = exception switch

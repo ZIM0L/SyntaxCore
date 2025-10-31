@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
@@ -36,8 +37,6 @@ namespace SyntaxCore.Infrastructure.SignalRHub
 
         public async Task JoinBattle(JoinBattleRequest joinBattleRequest)
         {
-            try
-            {
                 var request = new JoinBattleRequest(
                    joinBattleRequest.UserId,
                    joinBattleRequest.BattlePublicId,
@@ -47,16 +46,17 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 await Groups.AddToGroupAsync(Context.ConnectionId, joinBattleRequest.BattlePublicId.ToString());
                 await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {players.CurrentJoinedPlayerUserName} has joined the battle.");
                 Console.WriteLine($"Connection {Context.ConnectionId} joined battle group {joinBattleRequest.BattlePublicId.ToString()}");
-            }
-            catch(JoinBattleException jbe)
-            {
-                throw new HubException($"Join battle error: {jbe.Message}");
-            }
-            catch (Exception ex)
-            {
-                throw new HubException($"Error joining battle: {ex.Message}");
-            }
-            // Must catch exceptions and rethrow as HubException to send to client, dont know how
+           
+        }
+    }
+
+    public class SOHubPipelineModule : HubPipelineModule
+    {
+        protected override void OnIncomingError(ExceptionContext exceptionContext,
+                                                IHubIncomingInvokerContext invokerContext)
+        {
+            dynamic caller = invokerContext.Hub.Clients.Caller;
+            caller.ExceptionHandler(exceptionContext.Error.Message);
         }
     }
 }

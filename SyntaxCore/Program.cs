@@ -1,14 +1,18 @@
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using Sprache;
 using SyntaxCore.Infrastructure.DbContext;
 using SyntaxCore.Infrastructure.Middlewares;
 using SyntaxCore.Infrastructure.ServiceCollection;
 using SyntaxCore.Infrastructure.SignalRHub;
+using System;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +23,6 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi( "v1", opt =>
 {
 });
-
-builder.Services.AddSignalR();
 
 builder.Services.AddDependencyService(license);
 builder.Services.AddInfrastructureServices();
@@ -41,6 +43,48 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         ValidAlgorithms = [SecurityAlgorithms.HmacSha256]
     };
+
+    opt.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            context.NoResult();
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            string message = context.Exception switch
+            {
+                SecurityTokenExpiredException => "Your session has expired. Please log in again.",
+                SecurityTokenInvalidSignatureException => "Invalid token signature. Please log in again.",
+                SecurityTokenException => "Invalid authentication token. Please try again.",
+                _ => "Authentication failed. Please provide a valid token."
+            };
+
+            var errorResponse = new
+            {
+                success = false,
+                statusCode = context.Response.StatusCode,
+                message
+            };
+
+            return context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
+        },
+
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "application/json";
+
+            var errorResponse = new
+            {
+                success = false,
+                statusCode = context.Response.StatusCode,
+                message = "You do not have permission to perform this action."
+            };
+
+            return context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
+        }
+    };
 });
 
 
@@ -60,6 +104,14 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionStrings:DefaultConnection"));
 });
+
+builder.Services.AddSignalR(opt =>
+{
+    opt.EnableDetailedErrors = true;
+    opt.AddFilter<SignalRExceptionFilter>();
+
+}).AddHubOptions<BattleHub>(opt => { });
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -70,7 +122,6 @@ using (var scope = app.Services.CreateScope())
     await DatabaseChecker.CheckDatabaseConnection(dbContext, logger);
 }
 
-app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -81,14 +132,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapHub<BattleHub>("/hubs/battle");
 
 app.Run();
