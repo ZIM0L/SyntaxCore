@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;

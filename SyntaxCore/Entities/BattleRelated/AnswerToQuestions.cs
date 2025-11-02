@@ -14,8 +14,8 @@ public class AnswerToQuestions
     public Guid BattleFK { get; set; }
     public Guid QuestionFK { get; set; }
     public Guid UserFK { get; set; }
+    public string SelectedOptionAnswer { get; set; } = string.Empty;
 
-    public string AnswerText { get; set; } = string.Empty;
     public bool IsCorrect { get; set; }
     public DateTime AnswerAt { get; set; }
 

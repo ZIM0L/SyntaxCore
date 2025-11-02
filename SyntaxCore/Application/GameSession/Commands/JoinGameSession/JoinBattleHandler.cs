@@ -20,7 +20,15 @@ namespace SyntaxCore.Application.GameSession.Commands.JoinGameSession
             var battle = await battleRepository.GetBattleByPublicId(request.BattlePublicId) ?? throw new JoinBattleException("Could not join battle");
             var participantsBeforeJoin  = await battleParticipantRepository.GetParticipantsCountByBattleId(battle.BattleId) ?? new List<BattleParticipant>();
 
-            if (participantsBeforeJoin .Count >= battle.maxPlayers)
+            participantsBeforeJoin.ForEach(p =>
+            {
+                if (p.UserFK == request.UserId)
+                {
+                    throw new JoinBattleException("User already joined the battle");
+                }
+            });
+
+            if (participantsBeforeJoin.Count >= battle.maxPlayers)
             {
                 throw new JoinBattleException("Battle is full");
             }
