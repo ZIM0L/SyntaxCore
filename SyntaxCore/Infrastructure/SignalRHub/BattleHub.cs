@@ -42,21 +42,18 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                    joinBattleRequest.BattlePublicId,
                    BattleRole.Player
                    );
+            try
+            {
                 var players = await mediator.Send(request);
                 await Groups.AddToGroupAsync(Context.ConnectionId, joinBattleRequest.BattlePublicId.ToString());
                 await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {players.CurrentJoinedPlayerUserName} has joined the battle.");
+                await Clients.Caller.SendAsync("JoinBattleSuccess", $"Joined battle {joinBattleRequest.BattlePublicId}");
                 Console.WriteLine($"Connection {Context.ConnectionId} joined battle group {joinBattleRequest.BattlePublicId.ToString()}");
+            } catch(JoinBattleException ex)
+            {
+                await Clients.Caller.SendAsync("HubError", ex.Message);
+            }
            
-        }
-    }
-
-    public class SOHubPipelineModule : HubPipelineModule
-    {
-        protected override void OnIncomingError(ExceptionContext exceptionContext,
-                                                IHubIncomingInvokerContext invokerContext)
-        {
-            dynamic caller = invokerContext.Hub.Clients.Caller;
-            caller.ExceptionHandler(exceptionContext.Error.Message);
         }
     }
 }

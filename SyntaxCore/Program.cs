@@ -108,8 +108,6 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 builder.Services.AddSignalR(opt =>
 {
     opt.EnableDetailedErrors = true;
-    opt.AddFilter<SignalRExceptionFilter>();
-
 }).AddHubOptions<BattleHub>(opt => { });
 
 var app = builder.Build();
