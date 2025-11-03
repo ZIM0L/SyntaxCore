@@ -13,13 +13,8 @@ public class Question
 
     [MaxLength(255)]
     public string Category { get; set; } = string.Empty;
-
     public int Difficulty { get; set; }
-
     public string QuestionText { get; set; } = string.Empty;
-
-    public string CorrectAnswer { get; set; } = string.Empty;
-
     public string? Explanation { get; set; } = string.Empty;
     public int TimeForAnswerInSeconds { get; set; }
 

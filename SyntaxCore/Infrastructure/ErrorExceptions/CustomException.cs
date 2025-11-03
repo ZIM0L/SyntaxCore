@@ -18,4 +18,9 @@ namespace SyntaxCore.Infrastructure.ErrorExceptions
     /// </summary>
     /// <param name="message"></param>
     public class JoinBattleException(string message) : Exception(message);
+    /// <summary>
+    /// custom exception for question creation errors
+    /// </summary>
+    /// <param name="message"></param>
+    public class QuestionCreationException(string message) : Exception(message);
 }

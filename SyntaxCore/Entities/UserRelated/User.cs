@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 
 namespace SyntaxCore.Entities.UserRelated;
@@ -20,7 +21,7 @@ public class User
     [MaxLength(255)]
     public string PasswordHash { get; set; } = string.Empty;
     [MaxLength(50)]
-    public string? Role { get; set; } = string.Empty;
+    public string? Role { get; set; } = ContexRole.Player;
     [Precision(0)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     [Column("UserLevel")]

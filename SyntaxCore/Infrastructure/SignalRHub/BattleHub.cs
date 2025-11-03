@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Application.GameSession.Queries;
 using SyntaxCore.Constants;
+using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.ErrorExceptions;
+using SyntaxCore.Models.BattleRelated;
 
 namespace SyntaxCore.Infrastructure.SignalRHub
 {
@@ -39,20 +41,56 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 var request = new JoinBattleRequest(
                    joinBattleRequest.UserId,
                    joinBattleRequest.BattlePublicId,
-                   BattleRole.Player
+                   ContexRole.Player
                    );
             try
             {
                 var players = await mediator.Send(request);
+                
                 await Groups.AddToGroupAsync(Context.ConnectionId, joinBattleRequest.BattlePublicId.ToString());
-                await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {players.CurrentJoinedPlayerUserName} has joined the battle.");
+                
+                await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {players.CurrentJoinedPlayerUserName} has joined the battle. Players count: {players.PlayersUserNames.Count}/{players.MaxParticipants}");
+
                 await Clients.Caller.SendAsync("JoinBattleSuccess", $"Joined battle {joinBattleRequest.BattlePublicId}");
+                
                 Console.WriteLine($"Connection {Context.ConnectionId} joined battle group {joinBattleRequest.BattlePublicId.ToString()}");
+
+                if (players.PlayersUserNames.Count == players.MaxParticipants)
+                {
+                    await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("BattleIsReady", $"Battle is ready. Prepare ");
+                    await Task.Delay(2000);
+                    await StartBattle(joinBattleRequest.BattlePublicId);
+                }
+
             } catch(JoinBattleException ex)
             {
                 await Clients.Caller.SendAsync("HubError", ex.Message);
             }
            
+        }
+        private async Task StartBattle(Guid BattleIdToStart)
+        {
+            for (int i = 1; i <= 3; i++)
+            {
+                await Clients.Group(BattleIdToStart.ToString()).SendAsync("Countdown", i);
+                await Task.Delay(1000);
+            }
+        }
+        public async Task ReceiveQuestion(QuestionForBattleDto questionForBattleDto)
+        {
+
+        }
+        public async Task SubmitAnswer()
+        {
+
+        }
+        public async Task BattleFinished()
+        {
+
+        }
+        public async Task LeaveBattle()
+        {
+
         }
     }
 }

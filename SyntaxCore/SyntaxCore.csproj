@@ -23,5 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Infrastructure\DbContext\" />
+    <Folder Include="Repositories\AnswerToQuestionRepository\" />
   </ItemGroup>
 </Project>

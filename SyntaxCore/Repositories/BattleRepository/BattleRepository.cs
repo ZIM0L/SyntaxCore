@@ -15,7 +15,6 @@ namespace SyntaxCore.Repositories.BattleRepository
             await _context.SaveChangesAsync();
             return battle;
         }
-
         public async Task<List<Battle>> GetAllAvailableBattles(List<string>? categories, int? minQuestionsCount = null, int? maxQuestionsCount = null)
         {
             var query = _context.Battles.AsQueryable();
@@ -34,9 +33,16 @@ namespace SyntaxCore.Repositories.BattleRepository
             return await query.ToListAsync();
         }
 
-        public Task<Battle?> GetBattleByPublicId(Guid battlePublicId)
+        public async Task<Battle?> GetBattleByPublicId(Guid battlePublicId)
         {
-            return _context.Battles.FirstOrDefaultAsync(b => b.BattlePublicId == battlePublicId);
+            return await _context.Battles.FirstOrDefaultAsync(b => b.BattlePublicId == battlePublicId);
+        }
+
+        public async Task UpdateBattleStatus(Guid battlePublicId, string status)
+        {
+            await _context.Battles
+                .Where(b => b.BattlePublicId == battlePublicId)
+                .ExecuteUpdateAsync(b => b.SetProperty(b => b.Status, status));
         }
     }
 }

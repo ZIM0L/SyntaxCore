@@ -19,7 +19,7 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
         /// <paramref name="battleid"/>
         /// <returns>Returns list of participant of given battle id</returns>
         /// </summary>
-        public Task<List<BattleParticipant>?> GetParticipantsCountByBattleId(Guid battleid);
+        public Task<List<BattleParticipant>?> GetParticipantsByBattleId(Guid battleid);
 
     }
 }

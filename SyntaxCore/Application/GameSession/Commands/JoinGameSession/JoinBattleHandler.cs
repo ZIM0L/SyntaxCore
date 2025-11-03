@@ -18,7 +18,7 @@ namespace SyntaxCore.Application.GameSession.Commands.JoinGameSession
         public async Task<BattleParticipantsDto> Handle(JoinBattleRequest request, CancellationToken cancellationToken)
         {
             var battle = await battleRepository.GetBattleByPublicId(request.BattlePublicId) ?? throw new JoinBattleException("Could not join battle");
-            var participantsBeforeJoin  = await battleParticipantRepository.GetParticipantsCountByBattleId(battle.BattleId) ?? new List<BattleParticipant>();
+            var participantsBeforeJoin  = await battleParticipantRepository.GetParticipantsByBattleId(battle.BattleId) ?? new List<BattleParticipant>();
 
             participantsBeforeJoin.ForEach(p =>
             {
@@ -36,16 +36,21 @@ namespace SyntaxCore.Application.GameSession.Commands.JoinGameSession
             var battleParticipant = new BattleParticipant{
                 UserFK = request.UserId,
                 BattleFK = battle.BattleId,
-                Role = BattleRole.Player,
+                Role = ContexRole.Player,
                 Score = 0
             };
             await battleParticipantRepository.AddBattleParticipantAsync(battleParticipant);
 
             var participantsAfterJoin = await battleParticipantRepository
-               .GetParticipantsCountByBattleId(battle.BattleId) ?? new List<BattleParticipant>();
-
+               .GetParticipantsByBattleId(battle.BattleId) ?? new List<BattleParticipant>();
 
             var userIds = participantsAfterJoin.Select(p => p.UserFK).ToList();
+
+            if (participantsAfterJoin.Count == battle.maxPlayers)
+            {
+                await battleRepository.UpdateBattleStatus(battle.BattleId, BattleStatuses.InProgress);
+            }
+
             var users = await userRepository.GetUsersByIds(userIds) ?? new List<User>();
 
             var playerInitJoining = users.Where( u => u.UserId == request.UserId).Select(u => u.Username).First();

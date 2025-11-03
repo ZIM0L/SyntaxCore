@@ -28,7 +28,6 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
             );
 
             battle.StartedAt = DateTime.UtcNow;
-            battle.Status = BattleStatuses.Waiting;
             battle.Category = request.Category ?? BattleCategory.Bash;
 
             battle = await battleRepository.CreateBattle(battle) ?? throw new ArgumentException("Battle could not be created");
@@ -36,7 +35,7 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
             var joinBattleRequest = new JoinBattleRequest(
             request.UserId,
             battle.BattlePublicId,
-            BattleRole.Player
+            ContexRole.Player
             );
 
             await mediator.Send(joinBattleRequest, cancellationToken);

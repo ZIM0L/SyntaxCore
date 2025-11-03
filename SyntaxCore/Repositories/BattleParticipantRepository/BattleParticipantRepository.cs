@@ -21,7 +21,7 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
                 .ToListAsync();
         }
 
-        public async Task<List<BattleParticipant>?> GetParticipantsCountByBattleId(Guid battleid)
+        public async Task<List<BattleParticipant>?> GetParticipantsByBattleId(Guid battleid)
         {
             return await _context.BattleParticipants
                 .Where(bp => bp.BattleFK == battleid)

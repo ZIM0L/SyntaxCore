@@ -2,6 +2,7 @@ using SyntaxCore.Entities.UserRelated;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using SyntaxCore.Constants;
 
 namespace SyntaxCore.Entities.BattleRelated;
 
@@ -28,7 +29,7 @@ public class Battle
     public DateTime? EndedAt { get; set; }
 
     [MaxLength(50)]
-    public string Status { get; set; } = string.Empty;
+    public string Status { get; set; } = BattleStatuses.Waiting;
     public int maxPlayers { get; set; } = 2;
     public int QuestionsCount { get; set; }
 

@@ -28,5 +28,10 @@ namespace SyntaxCore.Repositories.BattleRepository
         /// </summary>
         /// <param name="battlePublicId"></param>
         public Task<Battle?> GetBattleByPublicId(Guid battlePublicId);
+
+        /// <summary>
+        /// Updates the status of a battle.
+        /// </summary>
+        Task UpdateBattleStatus(Guid battleId, string status);
     }
 }

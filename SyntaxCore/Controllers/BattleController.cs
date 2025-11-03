@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.CreateBattle;
+using SyntaxCore.Application.GameSession.Commands.CreateNewQuestions;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Infrastructure.SignalRHub;
 using SyntaxCore.Models.BattleRelated;
@@ -30,24 +31,28 @@ namespace SyntaxCore.Controllers
                 battleCreationDto.BattleName,
                 battleCreationDto.QuestionCount,
                 battleCreationDto.TimePerQuestion
-                );
+            );
 
             var result = await mediator.Send(battle);
 
             return Ok(result);
         }
         [HttpPost]
-        [Route("answer")]
-        public IEnumerable<string> SendAnswers()
+        [Route("create-question-for-battle")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateNewQuestions([FromBody] NewQuestionForBattleDto newQuestionForBattleDto)
         {
-            return new string[] { "value1", "value2" };
+            var command = new CreateNewQuestionForBattleRequest(
+                newQuestionForBattleDto.QuestionText,
+                newQuestionForBattleDto.Category,
+                newQuestionForBattleDto.CorrectAnswers,
+                newQuestionForBattleDto.WrongAnswers,
+                newQuestionForBattleDto.Difficulty,
+                newQuestionForBattleDto.TimeForAnswerInSeconds,
+                newQuestionForBattleDto.Explanation
+            );
+            await mediator.Send(command);
+            return Ok(new { Message = "New question for battle created successfully." });
         }
-        [HttpPost]
-        [Route("finish")]
-        public IEnumerable<string> fa()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
     }
 }
