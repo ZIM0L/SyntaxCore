@@ -29,8 +29,8 @@ namespace SyntaxCore.Controllers
             var battle = new CreateBattleRequest(
                 Guid.Parse(userIdClaim!),
                 battleCreationDto.BattleName,
-                battleCreationDto.QuestionCount,
-                battleCreationDto.TimePerQuestion
+                battleCreationDto.Configurations,
+                battleCreationDto.MaxPlayers
             );
 
             var result = await mediator.Send(battle);

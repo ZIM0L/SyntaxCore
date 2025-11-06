@@ -1,5 +1,6 @@
-﻿using SyntaxCore.Entities.BattleRelated;
-using SyntaxCore.Constants;
+﻿using SyntaxCore.Constants;
+using SyntaxCore.Entities.BattleRelated;
+using SyntaxCore.Models.BattleRelated;
 
 namespace SyntaxCore.Repositories.BattleRepository
 {
@@ -17,11 +18,12 @@ namespace SyntaxCore.Repositories.BattleRepository
         /// <param name="categories"></param>
         /// <param name="minQuestionsCount"></param>
         /// <param name="maxQuestionsCount"></param>
-        public Task<List<Battle>> GetAllAvailableBattles(
-            List<string>? categories,
-            int? minQuestionsCount = null,
-            int? maxQuestionsCount = null
-        );
+        public Task<List<BattleDto>> GetAllAvailableBattlesWithFilters(
+            string? BattleName,
+            List<string>? Categories,
+            int? DifficultyLevel,
+            int? MinQuestionsCount,
+            int? MaxQuestionsCount);
 
         /// <summary>
         /// Fetches a battle by its public identifier.

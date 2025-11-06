@@ -30,7 +30,9 @@ namespace SyntaxCore.Infrastructure.SignalRHub
         public async Task PreviewAllAvailableBattles(GetAllAvailableBattlesRequest getAllAvailableBattles)
         {
             var request = new GetAllAvailableBattlesRequest(
+                getAllAvailableBattles.BattleName,
                 getAllAvailableBattles.Categories,
+                getAllAvailableBattles.DifficultyLevel,
                 getAllAvailableBattles.MinQuestionsCount,
                 getAllAvailableBattles.MaxQuestionsCount
                 );

@@ -1,4 +1,5 @@
-﻿using SyntaxCore.Repositories.BattleParticipantRepository;
+﻿using SyntaxCore.Repositories.BattleConfigurationRepository;
+using SyntaxCore.Repositories.BattleParticipantRepository;
 using SyntaxCore.Repositories.BattleRepository;
 using SyntaxCore.Repositories.QuestionOptionRepository;
 using SyntaxCore.Repositories.QuestionRepository;
@@ -15,6 +16,7 @@ namespace SyntaxCore.Infrastructure.ServiceCollection
             services.AddScoped<IBattleParticipantRepository, BattleParticipantRepository>();
             services.AddScoped<IQuestionOptionRepository, QuestionOptionRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IBattleConfigurationRepository, BattleConfigurationRepository>();
 
             return services;
         }

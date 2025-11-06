@@ -10,10 +10,9 @@ namespace SyntaxCore.Entities.BattleRelated;
 [Comment("Records of battles between players, including participants, outcomes, and timestamps.")]
 public class Battle
 {
-    public Battle(string battleName, int questionsCount)
+    public Battle(string battleName)
     {
         BattleName = battleName;
-        QuestionsCount = questionsCount;
     }
 
     [Key]
@@ -28,7 +27,6 @@ public class Battle
     [MaxLength(50)]
     public string Status { get; set; } = BattleStatuses.Waiting;
     public int maxPlayers { get; set; } = 2;
-    public int QuestionsCount { get; set; }
 
     // Navigation
     [ForeignKey(nameof(PlayerWinnerFK))]
