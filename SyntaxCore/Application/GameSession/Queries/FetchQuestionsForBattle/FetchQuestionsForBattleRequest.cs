@@ -7,6 +7,7 @@ namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
     (
        string category,
        int difficulty,
-       int timeForAnswerInSeconds
+       int? timeForAnswerInSeconds,
+       int questionCountToGet
     ) : IRequest<QuestionForBattleDto>;
 }

@@ -1,4 +1,4 @@
-using DotNetEnv;
+﻿using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Sprache;
+using StackExchange.Redis;
 using SyntaxCore.Infrastructure.DbContext;
 using SyntaxCore.Infrastructure.Middlewares;
 using SyntaxCore.Infrastructure.ServiceCollection;
@@ -14,19 +15,33 @@ using System;
 using System.Text;
 using System.Text.Json;
 
+Console.OutputEncoding = System.Text.Encoding.UTF8;
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 var license = Environment.GetEnvironmentVariable("MEDIATR_LICENSE");
+
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.IncludeScopes = false;
+    options.SingleLine = true;
+    options.TimestampFormat = "[HH:mm:ss] ";
+});
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi( "v1", opt =>
 {
 });
 
-builder.Services.AddDependencyService(license);
+builder.Services.AddDependencyService(builder.Configuration, license);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddRepositoriesServices();
+
+builder.Services.AddStackExchangeRedisCache(opt =>
+{
+    opt.Configuration = builder.Configuration.GetValue<string>("ConnectionStrings:RedisConnection");
+    opt.InstanceName = "SyntaxCore_Cache";
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
@@ -114,10 +129,24 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var dbContext = services.GetRequiredService<MyDbContext>();
+        var redis = services.GetRequiredService<IConnectionMultiplexer>();
+        logger.LogInformation("Checking all external connections...");
 
-    await DatabaseChecker.CheckDatabaseConnection(dbContext, logger);
+        await ConnectionChecker.CheckAllConnections(dbContext, redis, logger);
+
+        logger.LogInformation("All external connections verified successfully.");
+
+    } catch (Exception ex)
+    {
+        logger.LogError($"An error occurred while applying migrations. {ex.Message}");
+        throw;
+    }
+
 }
 
 

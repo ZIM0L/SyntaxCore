@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Application.GameSession.Queries;
+using SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle;
 using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.ErrorExceptions;
@@ -75,6 +76,16 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 await Clients.Group(BattleIdToStart.ToString()).SendAsync("Countdown", i);
                 await Task.Delay(1000);
             }
+        }
+        public async Task SendQuestionRequest(FetchQuestionsForBattleRequest questionsForBattleRequest)
+        {
+            var request = new FetchQuestionsForBattleRequest(
+                questionsForBattleRequest.category, 
+                questionsForBattleRequest.difficulty, 
+                questionsForBattleRequest.timeForAnswerInSeconds);
+
+            var questionForBattleDto = await mediator.Send(request);
+            //await Clients.Group(battlePublicId.ToString()).SendAsync("ReceiveQuestion", questionForBattleDto);
         }
         public async Task ReceiveQuestion(QuestionForBattleDto questionForBattleDto)
         {

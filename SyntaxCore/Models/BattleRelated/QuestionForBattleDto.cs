@@ -2,9 +2,8 @@
 {
     public class QuestionForBattleDto
     {
-        public required string QuestionText { get; set; }
-        public required List<string> AllAnswers { get; set; }
-        public required List<string> CorrectAnswers { get; set; }
-        public required int TimeForAnswerInSeconds { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
+        public List<string> AllAnswers { get; set; } = new List<string>();
+        public int TimeForAnswerInSeconds { get; set; }
     }
 }

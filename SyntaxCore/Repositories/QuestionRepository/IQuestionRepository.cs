@@ -9,6 +9,15 @@ namespace SyntaxCore.Repositories.QuestionRepository
         /// </summary>
         /// <param name="question"></param>
         /// <returns></returns>
-        public Task createQuestion(Question question); 
+        public Task createQuestion(Question question);
+
+        /// <summary>
+        /// gets a random question by category and difficulty
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="difficulty"></param>
+        /// <param name="questionCountToGet"></param>
+        /// <returns></returns>
+        Task<List<Question>?> GetRandomQuestionByCategoryAndDifficulty(string category, int difficulty, int questionCountToGet);
     }
 }
