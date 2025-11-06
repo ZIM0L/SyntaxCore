@@ -5,9 +5,6 @@ namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
 {
     public record FetchQuestionsForBattleRequest
     (
-       string category,
-       int difficulty,
-       int? timeForAnswerInSeconds,
-       int questionCountToGet
+        Guid BattlePublicId
     ) : IRequest<QuestionForBattleDto>;
 }

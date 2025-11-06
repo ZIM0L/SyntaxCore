@@ -23,4 +23,9 @@ namespace SyntaxCore.Infrastructure.ErrorExceptions
     /// </summary>
     /// <param name="message"></param>
     public class QuestionCreationException(string message) : Exception(message);
+    /// <summary>
+    /// custom exception for question not available errors
+    /// </summary>
+    /// <param name="message"></param>
+    public class QuestionNotAvailableException(string message) : Exception(message);
 }

@@ -21,9 +21,6 @@ public class Battle
     public Guid BattlePublicId { get; set; } = Guid.NewGuid();
     public string BattleName { get; set; } = string.Empty;
     public Guid? PlayerWinnerFK { get; set; }
-
-    [MaxLength(255)]
-    public string Category { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
@@ -38,4 +35,5 @@ public class Battle
     public User? PlayerWinner { get; set; }
 
     public ICollection<BattleParticipant> BattleParticipant { get; set; } = new List<BattleParticipant>();
+    public ICollection<BattleConfiguration> BattleConfigurations { get; set; } = new List<BattleConfiguration>();
 }

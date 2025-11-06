@@ -21,8 +21,8 @@ namespace SyntaxCore.Repositories.BattleRepository
 
             query = query.Where(b => b.Status == BattleStatuses.Waiting);
 
-            if (categories != null && categories.Count > 0)
-                query = query.Where(b => categories.Contains(b.Category));
+            //if (categories != null && categories.Count > 0)
+            //    query = query.Where(b => categories.Contains(b.Category));
 
             if (minQuestionsCount.HasValue)
                 query = query.Where(b => b.QuestionsCount >= minQuestionsCount.Value);

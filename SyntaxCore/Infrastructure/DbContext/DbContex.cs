@@ -10,6 +10,7 @@ public class MyDbContext : Microsoft.EntityFrameworkCore.DbContext
     public MyDbContext(DbContextOptions<MyDbContext> op) : base(op) { }
 
     public DbSet<AnswerToQuestions> AnswersToQuestions { get; set; }
+    public DbSet<BattleConfiguration> BattleConfigurations { get; set; }
     public DbSet<Battle> Battles { get; set; }
     public DbSet<QuestionOption> QuestionOptions { get; set; }
     public DbSet<BattleParticipant> BattleParticipants { get; set; }

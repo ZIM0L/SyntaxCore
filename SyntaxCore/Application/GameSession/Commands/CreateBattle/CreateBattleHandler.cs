@@ -28,7 +28,6 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
             );
 
             battle.StartedAt = DateTime.UtcNow;
-            battle.Category = request.Category ?? BattleCategory.Bash;
 
             battle = await battleRepository.CreateBattle(battle) ?? throw new ArgumentException("Battle could not be created");
 
@@ -45,7 +44,6 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
                 BattleId = battle.BattlePublicId,
                 PlayerId1 = initPlayer.Username,
                 BattleName = battle.BattleName,
-                Category = battle.Category,
                 CreatedAt = battle.CreatedAt,
                 Status = battle.Status,
                 QuestionsCount = battle.QuestionsCount

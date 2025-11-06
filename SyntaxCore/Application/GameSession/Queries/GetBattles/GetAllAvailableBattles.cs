@@ -29,7 +29,6 @@ namespace SyntaxCore.Application.GameSession.Queries
                 {
                     BattleId = battle.BattlePublicId,
                     BattleName = battle.BattleName,
-                    Category = battle.Category,
                     QuestionsCount = battle.QuestionsCount,
                     PlayerId1 = battleParticipants.ElementAtOrDefault(0)?.User.Username ?? string.Empty,
                     PlayerId2 = battleParticipants.ElementAtOrDefault(1)?.User.Username ?? string.Empty,

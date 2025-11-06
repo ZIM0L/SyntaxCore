@@ -42,6 +42,8 @@ namespace SyntaxCore.Infrastructure.Middlewares
                 ForbiddenException => HttpStatusCode.Forbidden,
                 ValidationException => HttpStatusCode.BadRequest,
                 DbUpdateConcurrencyException => HttpStatusCode.Conflict,
+                QuestionCreationException => HttpStatusCode.BadRequest,
+                QuestionNotAvailableException => HttpStatusCode.NotFound,
                 _ => HttpStatusCode.InternalServerError
             };
             if (status == HttpStatusCode.InternalServerError)

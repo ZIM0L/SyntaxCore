@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
@@ -69,39 +70,20 @@ namespace SyntaxCore.Infrastructure.SignalRHub
             }
            
         }
-        private async Task StartBattle(Guid BattleIdToStart)
+        private async Task StartBattle(Guid battlePublicIdToStart)
         {
             for (int i = 1; i <= 3; i++)
             {
-                await Clients.Group(BattleIdToStart.ToString()).SendAsync("Countdown", i);
+                await Clients.Group(battlePublicIdToStart.ToString()).SendAsync("Countdown", i);
                 await Task.Delay(1000);
             }
+            var request = new FetchQuestionsForBattleRequest(battlePublicIdToStart);
+            await mediator.Send(request);
         }
-        public async Task SendQuestionRequest(FetchQuestionsForBattleRequest questionsForBattleRequest)
+        public async Task RequestNextQuestion(Guid battlePublicIdToStart)
         {
-            var request = new FetchQuestionsForBattleRequest(
-                questionsForBattleRequest.category, 
-                questionsForBattleRequest.difficulty, 
-                questionsForBattleRequest.timeForAnswerInSeconds);
-
-            var questionForBattleDto = await mediator.Send(request);
+            //var questionForBattleDto = await mediator.Send(request);
             //await Clients.Group(battlePublicId.ToString()).SendAsync("ReceiveQuestion", questionForBattleDto);
-        }
-        public async Task ReceiveQuestion(QuestionForBattleDto questionForBattleDto)
-        {
-
-        }
-        public async Task SubmitAnswer()
-        {
-
-        }
-        public async Task BattleFinished()
-        {
-
-        }
-        public async Task LeaveBattle()
-        {
-
         }
     }
 }

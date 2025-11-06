@@ -1,4 +1,5 @@
-﻿using SyntaxCore.Entities.BattleRelated;
+﻿using Microsoft.EntityFrameworkCore;
+using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.DbContext;
 
 namespace SyntaxCore.Repositories.QuestionOptionRepository
@@ -11,6 +12,13 @@ namespace SyntaxCore.Repositories.QuestionOptionRepository
         {
             await _context.QuestionOptions.AddRangeAsync(questionOption);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<QuestionOption>?> GetQuestionOptionsByQuestionId(Guid questionId)
+        {
+            return await _context.QuestionOptions
+                .Where(qo => qo.QuestionFK == questionId)
+                .ToListAsync();
         }
     }
 }
