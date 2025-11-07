@@ -24,11 +24,12 @@ public class QuestionFlag
     // Navigation
     [ForeignKey(nameof(QuestionFK))]
     public Question Question { get; set; } = null!;
+
     [ForeignKey(nameof(UserFK))]
     [InverseProperty(nameof(User.QuestionFlags))]
     public User User { get; set; } = null!;
+
     [ForeignKey(nameof(UserReviewerFK))]
     [InverseProperty(nameof(User.ReviewedFlags))]
-
     public User Reviewer { get; set; } = null!;
 }

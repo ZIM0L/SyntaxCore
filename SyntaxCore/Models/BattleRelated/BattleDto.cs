@@ -6,6 +6,7 @@ namespace SyntaxCore.Models.BattleRelated
     {
         public Guid BattlePublicId { get; set; }
         public string BattleName { get; set; } = string.Empty;
+        public string BattleOwner { get; set; } = string.Empty;
         public string Status { get; set; } = BattleStatuses.Waiting;
         public int TotalQuestionsCount { get; set; }
         public DateTime CreatedAt { get; set; }

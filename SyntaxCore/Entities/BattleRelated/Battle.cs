@@ -19,6 +19,7 @@ public class Battle
     public Guid BattleId { get; set; } = Guid.NewGuid();
     public Guid BattlePublicId { get; set; } = Guid.NewGuid();
     public string BattleName { get; set; } = string.Empty;
+    public Guid BattleOwnerFK { get; set; } 
     public Guid? PlayerWinnerFK { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? StartedAt { get; set; }
@@ -30,7 +31,12 @@ public class Battle
 
     // Navigation
     [ForeignKey(nameof(PlayerWinnerFK))]
-    public User? PlayerWinner { get; set; }
+    [InverseProperty(nameof(User.BattlesWon))]
+    public User? PlayerWinner { get; set; } = null;
+
+    [ForeignKey(nameof(BattleOwnerFK))]
+    [InverseProperty(nameof(User.BattlesOwn))]
+    public User BattleOwner { get; set; } = null!;
 
     public ICollection<BattleParticipant> BattleParticipant { get; set; } = new List<BattleParticipant>();
     public ICollection<BattleConfiguration> BattleConfigurations { get; set; } = new List<BattleConfiguration>();

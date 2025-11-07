@@ -11,6 +11,7 @@ using SyntaxCore.Repositories.BattleConfigurationRepository;
 using SyntaxCore.Repositories.BattleRepository;
 using SyntaxCore.Repositories.UserRepository;
 using System.Runtime.CompilerServices;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
 {
@@ -30,7 +31,9 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
             
             var battle = new Battle(request.BattleName);
 
+            battle.BattleOwnerFK = initPlayer.UserId;
             battle.Status = BattleStatuses.Waiting;
+            battle.maxPlayers = request.MaxPlayers;
 
             battle = await battleRepository.CreateBattle(battle) ?? throw new ArgumentException("Battle could not be created");
 
@@ -57,10 +60,19 @@ namespace SyntaxCore.Application.GameSession.Commands.CreateBattle
             {
                 BattlePublicId = battle.BattlePublicId,
                 BattleName = battle.BattleName,
+                BattleOwner = initPlayer.Username,
+                MaxPlayers = battle.maxPlayers,
                 CreatedAt = battle.CreatedAt,
                 Status = battle.Status,
+                CurrentPlayers = 1,
+                TotalQuestionsCount = battleConfigs.Sum(c => c.QuestionCount),
+                BattleConfiguration = battleConfigs.Select(c => 
+                new BattleConfigurationDto{
+                    Category = c.Category,
+                    Difficulty = c.Difficulty,
+                    QuestionCount = c.QuestionCount
+                }).ToList()
             };
-
             await hubContext.Clients.All.SendAsync("BattleCreated", $" Battle created: battle-{battle.BattleName}", battleDto);
             await hubContext.Clients.Group(battleDto.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {initPlayer.Username} has joined battle {battle.BattleName}");
 

@@ -1,4 +1,5 @@
-﻿using SyntaxCore.Entities.BattleRelated;
+﻿using MediatR;
+using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.DbContext;
 
 namespace SyntaxCore.Repositories.BattleConfigurationRepository
@@ -10,6 +11,13 @@ namespace SyntaxCore.Repositories.BattleConfigurationRepository
         public async Task CreateBattleConfigurationAsync(List<BattleConfiguration> battleConfiguration)
         {
             await _context.BattleConfigurations.AddRangeAsync(battleConfiguration);
+        }
+
+        public async Task DeleteBattleConfigurations(Guid battleId)
+        {
+            var configurations = _context.BattleConfigurations.Where(cfg => cfg.BattleFK == battleId);
+            _context.BattleConfigurations.RemoveRange(configurations);
+            await _context.SaveChangesAsync();
         }
     }
 }

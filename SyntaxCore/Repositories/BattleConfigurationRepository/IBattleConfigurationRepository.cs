@@ -1,4 +1,5 @@
-﻿using SyntaxCore.Entities.BattleRelated;
+﻿using MediatR;
+using SyntaxCore.Entities.BattleRelated;
 
 namespace SyntaxCore.Repositories.BattleConfigurationRepository
 {
@@ -8,5 +9,10 @@ namespace SyntaxCore.Repositories.BattleConfigurationRepository
         /// creates new battle configuration records in the database.
         /// </summary>
         public Task CreateBattleConfigurationAsync(List<BattleConfiguration> battleConfiguration);
+
+        /// <summary>
+        /// Deletes battle configurations by battle id.
+        /// </summary>
+        public Task DeleteBattleConfigurations(Guid battleId);
     }
 }

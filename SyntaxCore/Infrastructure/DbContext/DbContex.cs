@@ -9,6 +9,15 @@ public class MyDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public MyDbContext(DbContextOptions<MyDbContext> op) : base(op) { }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Battle>()
+            .HasOne(b => b.BattleOwner)
+            .WithMany(u => u.BattlesOwn)
+            .HasForeignKey(b => b.BattleOwnerFK)
+            .OnDelete(DeleteBehavior.Restrict); 
+    }
+
     public DbSet<AnswerToQuestions> AnswersToQuestions { get; set; }
     public DbSet<BattleConfiguration> BattleConfigurations { get; set; }
     public DbSet<Battle> Battles { get; set; }

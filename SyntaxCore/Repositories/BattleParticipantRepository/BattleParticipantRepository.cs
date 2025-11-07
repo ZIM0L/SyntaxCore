@@ -27,5 +27,12 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
                 .Where(bp => bp.BattleFK == battleid)
                 .ToListAsync();
         }
+
+        public async Task DeleteBattleParticipants(Guid battleId)
+        {
+            var participants = _context.BattleParticipants.Where(bp => bp.BattleFK == battleId);
+            _context.BattleParticipants.RemoveRange(participants);
+            await _context.SaveChangesAsync();
+        }
     }
 }

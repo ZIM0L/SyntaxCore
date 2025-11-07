@@ -44,11 +44,12 @@ namespace SyntaxCore.Infrastructure.Middlewares
                 DbUpdateConcurrencyException => HttpStatusCode.Conflict,
                 QuestionCreationException => HttpStatusCode.BadRequest,
                 QuestionNotAvailableException => HttpStatusCode.NotFound,
+                BattleException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };
             if (status == HttpStatusCode.InternalServerError)
             {
-                _logger.LogError(exception, "Unhandled exception occurred");
+                _logger.LogError(exception.Message, "Unhandled exception occurred");
             }
 
             context.Response.StatusCode = (int)status;
@@ -58,7 +59,7 @@ namespace SyntaxCore.Infrastructure.Middlewares
                 StatusCode = context.Response.StatusCode,
                 Detail = exception.Message
             };
-            _logger.LogError(exception, "Exception occurred");
+            _logger.LogError("Exception occurred: {ExceptionType} — {Message}", exception.GetType().Name, exception.Message);
             await context.Response.WriteAsJsonAsync(errorResponse);
         }
     }

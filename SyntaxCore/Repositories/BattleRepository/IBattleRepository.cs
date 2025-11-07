@@ -24,16 +24,19 @@ namespace SyntaxCore.Repositories.BattleRepository
             int? DifficultyLevel,
             int? MinQuestionsCount,
             int? MaxQuestionsCount);
-
         /// <summary>
         /// Fetches a battle by its public identifier.
         /// </summary>
         /// <param name="battlePublicId"></param>
         public Task<Battle?> GetBattleByPublicId(Guid battlePublicId);
-
         /// <summary>
         /// Updates the status of a battle.
         /// </summary>
         Task UpdateBattleStatus(Guid battleId, string status);
+        /// <summary>
+        /// Deletes a battle by its identifier.
+        /// </summary>
+        /// <param name="battleId"></param>
+        public Task DeleteBattle(Guid battleId);
     }
 }

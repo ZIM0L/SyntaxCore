@@ -36,6 +36,7 @@ public class User
     // Navigation
     public ICollection<UserLogin> UserLogins { get; set; } = null!;
     public ICollection<UserXpLog> XPLogs { get; set; } = null!;
+    public ICollection<Battle>? BattlesOwn { get; set; } = null!;
     public ICollection<Battle> BattlesWon { get; set; } = null!;
     public ICollection<Achievement> UserAchievements { get; set; } = null!;
     public ICollection<Comment> Comments { get; set; } = null!;

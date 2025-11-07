@@ -17,6 +17,13 @@ namespace SyntaxCore.Repositories.BattleRepository
             return battle;
         }
 
+        public async Task DeleteBattle(Guid battleId)
+        {
+            var battle = _context.Battles.FirstOrDefault(b => b.BattleId == battleId);
+            _context.Battles.Remove(battle!);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<BattleDto>> GetAllAvailableBattlesWithFilters(
             string? battleName,
             List<string>? categories,
@@ -51,6 +58,7 @@ namespace SyntaxCore.Repositories.BattleRepository
                 {
                     BattlePublicId = b.BattlePublicId,
                     BattleName = b.BattleName,
+                    BattleOwner = b.BattleOwner.Username,
                     CreatedAt = b.CreatedAt,
                     StartedAt = b.StartedAt,
                     EndedAt = b.EndedAt,

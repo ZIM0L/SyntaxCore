@@ -20,6 +20,11 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
         /// <returns>Returns list of participant of given battle id</returns>
         /// </summary>
         public Task<List<BattleParticipant>?> GetParticipantsByBattleId(Guid battleid);
+        /// <summary>
+        /// Deletes battle participants by battle id.
+        /// </summary>
+        /// <param name="battleId"></param>
+        public Task DeleteBattleParticipants(Guid battleId);
 
     }
 }

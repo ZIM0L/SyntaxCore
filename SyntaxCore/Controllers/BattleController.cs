@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.CreateBattle;
 using SyntaxCore.Application.GameSession.Commands.CreateNewQuestions;
+using SyntaxCore.Application.GameSession.Commands.DeleteBattle;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Infrastructure.SignalRHub;
 using SyntaxCore.Models.BattleRelated;
@@ -36,6 +37,21 @@ namespace SyntaxCore.Controllers
             var result = await mediator.Send(battle);
 
             return Ok(result);
+        }
+        [HttpDelete]
+        [Route("{battlePublicId:guid}")]
+        public async Task<IActionResult> DeleteBattle([FromRoute] Guid battlePublicId)
+        {
+            var userIdClaim = (HttpContext.User.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var battleToDelete = new DeleteBattleRequest(
+                Guid.Parse(userIdClaim!),
+                battlePublicId
+            );
+
+            var result = await mediator.Send(battleToDelete);
+
+            return Ok("Battle has been successfully deleted.");
         }
         [HttpPost]
         [Route("create-question-for-battle")]

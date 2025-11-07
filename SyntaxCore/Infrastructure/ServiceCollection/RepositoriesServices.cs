@@ -12,11 +12,14 @@ namespace SyntaxCore.Infrastructure.ServiceCollection
         public static IServiceCollection AddRepositoriesServices(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            //battle
             services.AddScoped<IBattleRepository, BattleRepository>();
             services.AddScoped<IBattleParticipantRepository, BattleParticipantRepository>();
+            services.AddScoped<IBattleConfigurationRepository, BattleConfigurationRepository>();
+            
+            //questions
             services.AddScoped<IQuestionOptionRepository, QuestionOptionRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
-            services.AddScoped<IBattleConfigurationRepository, BattleConfigurationRepository>();
 
             return services;
         }
