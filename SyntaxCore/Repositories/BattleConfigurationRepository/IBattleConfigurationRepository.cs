@@ -18,6 +18,6 @@ namespace SyntaxCore.Repositories.BattleConfigurationRepository
         /// gets battles configurations
         /// </summary>
         /// <returns></returns>
-        public Task<List<BattleConfiguration>?> getBattlesConfigurationsAsync(List<Battle> battles);
+        public Task<List<BattleConfiguration>> getBattlesConfigurationsAsync(List<Battle> battles);
     }
 }

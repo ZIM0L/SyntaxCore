@@ -42,6 +42,6 @@ namespace SyntaxCore.Repositories.BattleRepository
         /// gets all games with waiting status
         /// </summary>
         /// <returns></returns>
-        public Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync();
+        public Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync(string? battleName);
     }
 }

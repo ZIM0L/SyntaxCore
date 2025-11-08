@@ -4,7 +4,7 @@ using SyntaxCore.Models.BattleRelated;
 namespace SyntaxCore.Application.GameSession.Queries
 {
     public record GetAllAvailableBattlesRequest( 
-        string BattleName,
+        string? BattleName,
         List<string>? Categories,
         int DifficultyLevel,
         int? MinQuestionsCount,

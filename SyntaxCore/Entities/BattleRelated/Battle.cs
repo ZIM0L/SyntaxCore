@@ -38,6 +38,6 @@ public class Battle
     [InverseProperty(nameof(User.BattlesOwn))]
     public User BattleOwner { get; set; } = null!;
 
-    public ICollection<BattleParticipant> BattleParticipant { get; set; } = new List<BattleParticipant>();
+    public ICollection<BattleParticipant> BattleParticipants { get; set; } = new List<BattleParticipant>();
     public ICollection<BattleConfiguration> BattleConfigurations { get; set; } = new List<BattleConfiguration>();
 }

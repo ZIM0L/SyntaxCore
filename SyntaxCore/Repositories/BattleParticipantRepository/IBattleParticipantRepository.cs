@@ -11,9 +11,9 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
         /// <returns></returns>
         public Task AddBattleParticipantAsync(BattleParticipant participant);
         /// <summary>
-        /// Gets all battle participants for the given battle ids
+        /// Gets all battle participants for the given battles
         /// </summary>
-        public Task<List<BattleParticipant>> GetParticipantsByBattleIds(List<Guid> battleIds);
+        public Task<List<BattleParticipant>> GetParticipantsByBattles(List<Battle> battles);
         /// <summary>
         /// Gets all battle participants count for the given battle id
         /// <paramref name="battleid"/>

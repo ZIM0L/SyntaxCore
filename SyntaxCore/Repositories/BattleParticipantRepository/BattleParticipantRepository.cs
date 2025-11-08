@@ -13,10 +13,10 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<BattleParticipant>> GetParticipantsByBattleIds(List<Guid> battleIds)
+        public async Task<List<BattleParticipant>> GetParticipantsByBattles(List<Battle> battles)
         {
            return await _context.BattleParticipants
-                .Where(bp => battleIds.Contains(bp.BattleFK))
+                .Where(bp => battles.Select(b => b.BattleId).Contains(bp.BattleFK))
                 .Include(bp => bp.User)
                 .ToListAsync();
         }

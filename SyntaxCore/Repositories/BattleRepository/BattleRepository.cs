@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.DbContext;
@@ -32,26 +33,28 @@ namespace SyntaxCore.Repositories.BattleRepository
             int? maxQuestionsCount)
         {
             var query = _context.Battles
-                .AsNoTracking() 
+                .AsNoTracking()
+                .Include(b => b.BattleParticipants)
                 .Include(b => b.BattleConfigurations)
-                .Include(b => b.BattleParticipant)
                 .Where(b => b.Status == BattleStatuses.Waiting)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(battleName))
+            {
                 query = query.Where(b => EF.Functions.Like(b.BattleName, $"%{battleName}%"));
+            }
 
             if (categories is { Count: > 0 })
-                query = query.Where(b => b.BattleConfigurations.Any(cfg => categories.Contains(cfg.Category)));
+            {
+                query = query.Where(b =>
+                    b.BattleConfigurations.Any(cfg => categories.Contains(cfg.Category)));
+            }
 
-            if (difficultyLevel.HasValue)
-                query = query.Where(b => b.BattleConfigurations.Any(cfg => cfg.Difficulty == difficultyLevel.Value));
-
-            if (minQuestionsCount.HasValue)
-                query = query.Where(b => b.BattleConfigurations.Any(cfg => cfg.QuestionCount >= minQuestionsCount.Value));
-
-            if (maxQuestionsCount.HasValue)
-                query = query.Where(b => b.BattleConfigurations.Any(cfg => cfg.QuestionCount <= maxQuestionsCount.Value));
+            if (difficultyLevel > 0)
+            {
+                query = query.Where(b =>
+                    b.BattleConfigurations.Any(cfg => cfg.Difficulty == difficultyLevel));
+            }
 
             var battles = await query
                 .Select(b => new BattleDto
@@ -64,7 +67,7 @@ namespace SyntaxCore.Repositories.BattleRepository
                     EndedAt = b.EndedAt,
                     Status = b.Status,
                     MaxPlayers = b.maxPlayers,
-                    CurrentPlayers = b.BattleParticipant.Count,
+                    CurrentPlayers = b.BattleParticipants.Count(),
                     TotalQuestionsCount = b.BattleConfigurations.Sum(cfg => cfg.QuestionCount),
                     BattleConfiguration = b.BattleConfigurations.Select(cfg => new BattleConfigurationDto
                     {
@@ -78,11 +81,12 @@ namespace SyntaxCore.Repositories.BattleRepository
             return battles;
         }
 
-        public async Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync()
+        public async Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync(string? battleName)
         {
             return await _context.Battles
-                .Where(b => b.Status == BattleStatuses.Waiting)
-                .ToListAsync();
+                   .Where(b => b.Status == BattleStatuses.Waiting)
+                   .Where(b => string.IsNullOrEmpty(battleName) || EF.Functions.Like(b.BattleName, $"%{battleName}%"))
+                   .ToListAsync();
         }
 
         public async Task<Battle?> GetBattleByPublicId(Guid battlePublicId)

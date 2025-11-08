@@ -10,25 +10,30 @@ using System.Linq;
 namespace SyntaxCore.Application.GameSession.Queries
 {
     public class GetAllAvailableBattles(
-        IBattleRepository battleRepository,
-        IBattleConfigurationRepository battleConfigurationRepository
+        IBattleRepository battleRepository
         ) : IRequestHandler<GetAllAvailableBattlesRequest, List<BattleDto>>
     {
         public async Task<List<BattleDto>> Handle(GetAllAvailableBattlesRequest request, CancellationToken cancellationToken)
         {
-            if (await battleRepository.GetAllGamesWithWaitingStatusAsync() is not List<Battle> battlesToFetch)
-            {
-                throw new BattleException("No battles with waiting status found.");
-            }
-
-            await battleConfigurationRepository.getBattlesConfigurationsAsync();
-
-            return await battleRepository.GetAllAvailableBattlesWithFilters(
+            var battles = await battleRepository.GetAllAvailableBattlesWithFilters(
                 request.BattleName,
                 request.Categories,
                 request.DifficultyLevel,
                 request.MinQuestionsCount,
                 request.MaxQuestionsCount);
+
+            if (request.MinQuestionsCount.HasValue)
+            {
+                battles.RemoveAll(b => b.TotalQuestionsCount < request.MinQuestionsCount.Value);
+            }
+
+            if (request.MaxQuestionsCount.HasValue)
+            {
+                battles.RemoveAll(b => b.TotalQuestionsCount > request.MaxQuestionsCount.Value);
+            }
+
+            return battles;
+
         }
     }
 }

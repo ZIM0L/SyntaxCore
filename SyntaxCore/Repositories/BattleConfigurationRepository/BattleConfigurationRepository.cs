@@ -21,7 +21,7 @@ namespace SyntaxCore.Repositories.BattleConfigurationRepository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<BattleConfiguration>?> getBattlesConfigurationsAsync(List<Battle> battles)
+        public async Task<List<BattleConfiguration>> getBattlesConfigurationsAsync(List<Battle> battles)
         {
             return await _context.BattleConfigurations
                 .Where(cfg => battles.Select(b => b.BattleId).Contains(cfg.BattleFK))
