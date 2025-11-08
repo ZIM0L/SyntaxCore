@@ -38,5 +38,10 @@ namespace SyntaxCore.Repositories.BattleRepository
         /// </summary>
         /// <param name="battleId"></param>
         public Task DeleteBattle(Guid battleId);
+        /// <summary>
+        /// gets all games with waiting status
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync();
     }
 }

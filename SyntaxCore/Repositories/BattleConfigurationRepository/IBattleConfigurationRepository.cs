@@ -14,5 +14,10 @@ namespace SyntaxCore.Repositories.BattleConfigurationRepository
         /// Deletes battle configurations by battle id.
         /// </summary>
         public Task DeleteBattleConfigurations(Guid battleId);
+        /// <summary>
+        /// gets battles configurations
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<BattleConfiguration>?> getBattlesConfigurationsAsync(List<Battle> battles);
     }
 }

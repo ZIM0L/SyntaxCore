@@ -78,6 +78,13 @@ namespace SyntaxCore.Repositories.BattleRepository
             return battles;
         }
 
+        public async Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync()
+        {
+            return await _context.Battles
+                .Where(b => b.Status == BattleStatuses.Waiting)
+                .ToListAsync();
+        }
+
         public async Task<Battle?> GetBattleByPublicId(Guid battlePublicId)
         {
             return await _context.Battles.FirstOrDefaultAsync(b => b.BattlePublicId == battlePublicId);
