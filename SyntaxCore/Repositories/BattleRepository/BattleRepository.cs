@@ -27,36 +27,51 @@ namespace SyntaxCore.Repositories.BattleRepository
 
         public async Task<List<QuestionForBattleDto>> FetchAllQuestionsForBattle(Guid battlePublicId)
         {
-            var battleWithConfigs = await _context.Battles
+            var battle = await _context.Battles
                 .Include(b => b.BattleConfigurations)
-                .Where(b => b.BattlePublicId == battlePublicId).SelectMany(b => b.BattleConfigurations).ToListAsync();
+                .FirstOrDefaultAsync(b => b.BattlePublicId == battlePublicId);
 
-            var battleWithQuestions = await _context.Questions
-                .Where(cfg => battleWithConfigs.Select(bc => bc.Category).Contains(cfg.Category))
-                .Include(qo => qo.Options)
-                .GroupBy(q => q.Category).ToListAsync();
+            var configs = battle!.BattleConfigurations.ToList();
 
-            Console.WriteLine("Battle Configurations:");
-            battleWithConfigs.ForEach(cfg =>
+            var categories = configs.Select(c => c.Category).Distinct().ToList();
+            var difficulties = configs.Select(c => c.Difficulty).Distinct().ToList();
+
+            var allPossibleQuestions = await _context.Questions
+                .Where(q => categories.Contains(q.Category) && difficulties.Contains(q.Difficulty))
+                .Include(q => q.Options)
+                .ToListAsync();
+
+            var selectedQuestions = new List<QuestionForBattleDto>();
+
+            foreach (var cfg in configs)
             {
-                Console.WriteLine($"Config Category: {cfg.Category}, Difficulty: {cfg.Difficulty}, QuestionCount: {cfg.QuestionCount},");
-            });
+                var matchingQuestions = allPossibleQuestions
+                    .Where(q => q.Category == cfg.Category && q.Difficulty == cfg.Difficulty)
+                    .OrderBy(q => Guid.NewGuid()) 
+                    .Take(cfg.QuestionCount)
+                    .Select(q => new QuestionForBattleDto
+                    {
+                        QuestionText = q.QuestionText,
+                        TimeForAnswerInSeconds = q.TimeForAnswerInSeconds,
+                        AllAnswers = q.Options.ToDictionary(
+                            o => o.OptionAnswer,
+                            o => o.IsCorrect
+                        )
+                    })
+                    .ToList();
 
-            //var questionsForBattle = battleWithQuestions.BattleConfigurations
-            //    .SelectMany(cfg => cfg.Questions)
-            //    .Select(q => new QuestionForBattleDto
+                selectedQuestions.AddRange(matchingQuestions);
+            }
+            //Console.WriteLine("Fetched Questions:");
+            //foreach (var q in selectedQuestions)
+            //{
+            //    Console.WriteLine($"Question: {q.QuestionText}");
+            //    foreach (var a in q.AllAnswers)
             //    {
-            //        QuestionId = q.QuestionId,
-            //        Content = q.Content,
-            //        QuestionOptions = q.QuestionOptions.Select(qo => new QuestionOptionDto
-            //        {
-            //            QuestionOptionId = qo.QuestionOptionId,
-            //            Content = qo.Content,
-            //            IsCorrect = qo.IsCorrect
-            //        }).ToList()
-            //    })
-            //    .ToList();
-            return new List<QuestionForBattleDto>();
+            //        Console.WriteLine($"\tAnswer: {a.Key}, Correct: {a.Value}");
+            //    }
+            //}
+            return selectedQuestions;
         }
 
         public async Task<List<BattleDto>> GetAllAvailableBattlesWithFilters(

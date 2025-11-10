@@ -7,6 +7,7 @@ using SyntaxCore.Repositories.BattleRepository;
 using SyntaxCore.Repositories.QuestionOptionRepository;
 using SyntaxCore.Repositories.QuestionRepository;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
 {
@@ -18,32 +19,24 @@ namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
     {
         public async Task<List<QuestionForBattleDto>> Handle(FetchQuestionsForBattleRequest request, CancellationToken cancellationToken)
         {
-            var question = new List<QuestionForBattleDto>();
+            var cachedQuestions = await distributedCache.GetAsync(request.BattlePublicId.ToString());
+            if (cachedQuestions is not null)
+            {
+                await distributedCache.RefreshAsync(request.BattlePublicId.ToString());
+                return  JsonSerializer.Deserialize<List<QuestionForBattleDto>>(cachedQuestions) ?? throw new ArgumentException("Battle couldn't start");
+            }
 
-            Console.WriteLine("Fetching questions for battle with ID: " + request.BattlePublicId);
-            var battle = await battleRepository.FetchAllQuestionsForBattle(request.BattlePublicId) ?? throw new ArgumentException("Battle couldn't start");
+            var FetchedQuestionsFromDB = await battleRepository.FetchAllQuestionsForBattle(request.BattlePublicId) ?? throw new ArgumentException("Battle couldn't start");
 
+            await distributedCache.SetAsync(
+                request.BattlePublicId.ToString(),
+                JsonSerializer.SerializeToUtf8Bytes(FetchedQuestionsFromDB),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            });
 
-            //if (await questionRepository.GetRandomQuestionByCategoryAndDifficulty(battle.Category, battle.diff, request.questionCountToGet)
-            //    is not List<Question> fetchedQuestion)
-            //{
-            //    throw new QuestionNotAvailableException("No questions matching the given category or difficulty were found in the database.");
-            //}
-
-            //if (fetchedQuestion.Count < request.questionCountToGet)
-            //{
-            //    throw new QuestionNotAvailableException("Not enough questions available to fulfill the requested amount.");
-            //}
-
-            //Dictionary<Guid, List<QuestionOption>> dictionaryWithQuestions = new Dictionary<Guid, List<QuestionOption>>();
-
-            //fetchedQuestion.ForEach(async qo =>
-            //{
-            //    dictionaryWithQuestions[qo.QuestionId] = await questionOptionRepository.GetQuestionOptionsByQuestionId(qo.QuestionId) 
-            //        ?? throw new QuestionNotAvailableException("unknown error occured during fetching question");
-            //});
-
-            return question;
+            return FetchedQuestionsFromDB;
         }
     }
 }
