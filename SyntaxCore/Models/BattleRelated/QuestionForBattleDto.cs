@@ -3,7 +3,7 @@
     public class QuestionForBattleDto
     {
         public string QuestionText { get; set; } = string.Empty;
-        public List<string> AllAnswers { get; set; } = new List<string>();
+        public Dictionary<string, bool> AllAnswers { get; set; } = new Dictionary<string, bool>();
         public int TimeForAnswerInSeconds { get; set; }
     }
 }

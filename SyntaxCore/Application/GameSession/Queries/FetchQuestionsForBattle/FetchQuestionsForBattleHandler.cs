@@ -11,16 +11,17 @@ using System.Diagnostics;
 namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
 {
     public class FetchQuestionsForBattleHandler(
-        IQuestionRepository questionRepository, 
-        IQuestionOptionRepository questionOptionRepository, 
+        IQuestionRepository questionRepository,
+        IQuestionOptionRepository questionOptionRepository,
         IBattleRepository battleRepository,
-        IDistributedCache distributedCache) : IRequestHandler<FetchQuestionsForBattleRequest, QuestionForBattleDto>
+        IDistributedCache distributedCache) : IRequestHandler<FetchQuestionsForBattleRequest, List<QuestionForBattleDto>>
     {
-        public async Task<QuestionForBattleDto> Handle(FetchQuestionsForBattleRequest request, CancellationToken cancellationToken)
+        public async Task<List<QuestionForBattleDto>> Handle(FetchQuestionsForBattleRequest request, CancellationToken cancellationToken)
         {
-            var question = new QuestionForBattleDto();
+            var question = new List<QuestionForBattleDto>();
 
-            var battle = await battleRepository.GetBattleByPublicId(request.BattlePublicId) ?? throw new ArgumentException("Battle couldn't start");
+            Console.WriteLine("Fetching questions for battle with ID: " + request.BattlePublicId);
+            var battle = await battleRepository.FetchAllQuestionsForBattle(request.BattlePublicId) ?? throw new ArgumentException("Battle couldn't start");
 
 
             //if (await questionRepository.GetRandomQuestionByCategoryAndDifficulty(battle.Category, battle.diff, request.questionCountToGet)
@@ -41,7 +42,7 @@ namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
             //    dictionaryWithQuestions[qo.QuestionId] = await questionOptionRepository.GetQuestionOptionsByQuestionId(qo.QuestionId) 
             //        ?? throw new QuestionNotAvailableException("unknown error occured during fetching question");
             //});
-           
+
             return question;
         }
     }

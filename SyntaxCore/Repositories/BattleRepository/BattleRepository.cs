@@ -25,6 +25,40 @@ namespace SyntaxCore.Repositories.BattleRepository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<QuestionForBattleDto>> FetchAllQuestionsForBattle(Guid battlePublicId)
+        {
+            var battleWithConfigs = await _context.Battles
+                .Include(b => b.BattleConfigurations)
+                .Where(b => b.BattlePublicId == battlePublicId).SelectMany(b => b.BattleConfigurations).ToListAsync();
+
+            var battleWithQuestions = await _context.Questions
+                .Where(cfg => battleWithConfigs.Select(bc => bc.Category).Contains(cfg.Category))
+                .Include(qo => qo.Options)
+                .GroupBy(q => q.Category).ToListAsync();
+
+            Console.WriteLine("Battle Configurations:");
+            battleWithConfigs.ForEach(cfg =>
+            {
+                Console.WriteLine($"Config Category: {cfg.Category}, Difficulty: {cfg.Difficulty}, QuestionCount: {cfg.QuestionCount},");
+            });
+
+            //var questionsForBattle = battleWithQuestions.BattleConfigurations
+            //    .SelectMany(cfg => cfg.Questions)
+            //    .Select(q => new QuestionForBattleDto
+            //    {
+            //        QuestionId = q.QuestionId,
+            //        Content = q.Content,
+            //        QuestionOptions = q.QuestionOptions.Select(qo => new QuestionOptionDto
+            //        {
+            //            QuestionOptionId = qo.QuestionOptionId,
+            //            Content = qo.Content,
+            //            IsCorrect = qo.IsCorrect
+            //        }).ToList()
+            //    })
+            //    .ToList();
+            return new List<QuestionForBattleDto>();
+        }
+
         public async Task<List<BattleDto>> GetAllAvailableBattlesWithFilters(
             string? battleName,
             List<string>? categories,

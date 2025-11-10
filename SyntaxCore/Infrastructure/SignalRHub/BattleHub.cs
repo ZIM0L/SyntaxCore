@@ -52,7 +52,11 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 var players = await mediator.Send(request);
                 
                 await Groups.AddToGroupAsync(Context.ConnectionId, joinBattleRequest.BattlePublicId.ToString());
-                
+
+                // Fetch questions for the battle to prepare
+                var test = new FetchQuestionsForBattleRequest(joinBattleRequest.BattlePublicId);
+                    await mediator.Send(test);
+
                 await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {players.CurrentJoinedPlayerUserName} has joined the battle. Players count: {players.PlayersUserNames.Count}/{players.MaxParticipants}");
 
                 await Clients.Caller.SendAsync("JoinBattleSuccess", $"Joined battle {joinBattleRequest.BattlePublicId}");

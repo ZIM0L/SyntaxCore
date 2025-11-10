@@ -43,5 +43,9 @@ namespace SyntaxCore.Repositories.BattleRepository
         /// </summary>
         /// <returns></returns>
         public Task<List<Battle>?> GetAllGamesWithWaitingStatusAsync(string? battleName);
+        /// <summary>
+        /// Fetches all questions associated with a specific battle.
+        /// <summary/>
+        Task<List<QuestionForBattleDto>> FetchAllQuestionsForBattle(Guid battlePublicId);
     }
 }
