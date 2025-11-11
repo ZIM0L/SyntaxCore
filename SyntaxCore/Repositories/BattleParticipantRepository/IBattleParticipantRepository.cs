@@ -25,6 +25,11 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
         /// </summary>
         /// <param name="battleId"></param>
         public Task DeleteBattleParticipants(Guid battleId);
-
+        /// <summary>
+        /// Removes a participant from a battle based on the public battle ID.
+        /// </summary>
+        /// <param name="publicBattleId"></param>
+        /// <returns></returns>
+        public Task RemoveParticipantFromBattle(Guid publicBattleId, Guid playerId);
     }
 }

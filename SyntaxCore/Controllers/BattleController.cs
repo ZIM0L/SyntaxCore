@@ -7,6 +7,7 @@ using SyntaxCore.Application.GameSession.Commands.CreateBattle;
 using SyntaxCore.Application.GameSession.Commands.CreateNewQuestions;
 using SyntaxCore.Application.GameSession.Commands.DeleteBattle;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
+using SyntaxCore.Application.GameSession.Queries.LeaveBattle;
 using SyntaxCore.Infrastructure.SignalRHub;
 using SyntaxCore.Models.BattleRelated;
 using System.ComponentModel.DataAnnotations;
@@ -58,7 +59,7 @@ namespace SyntaxCore.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateNewQuestions([FromBody] NewQuestionForBattleDto newQuestionForBattleDto)
         {
-            var command = new CreateNewQuestionForBattleRequest(
+            var request = new CreateNewQuestionForBattleRequest(
                 newQuestionForBattleDto.QuestionText,
                 newQuestionForBattleDto.Category,
                 newQuestionForBattleDto.CorrectAnswers,
@@ -67,8 +68,20 @@ namespace SyntaxCore.Controllers
                 newQuestionForBattleDto.TimeForAnswerInSeconds,
                 newQuestionForBattleDto.Explanation
             );
-            await mediator.Send(command);
+            await mediator.Send(request);
             return Ok(new { Message = "New question for battle created successfully." });
+        }
+        [HttpDelete]
+        [Route("{battlePublicId:guid}/leave")]
+        public async Task<IActionResult> CreateNewQuestions([FromRoute] Guid battlePublicId)
+        {
+            var userIdClaim = (HttpContext.User.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var request = new LeaveBattleRequest(
+                battlePublicId,
+                Guid.Parse(userIdClaim!)
+            );
+            await mediator.Send(request);
+            return Ok(new { Message = "Left battle successfully" });
         }
     }
 }

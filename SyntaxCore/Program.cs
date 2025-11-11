@@ -154,7 +154,11 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(opt =>
+    {
+        opt.Title = "SyntaxCore API";
+        opt.AddPreferredSecuritySchemes("BearerAuth");
+    });
 }
 
 app.UseHttpsRedirection();

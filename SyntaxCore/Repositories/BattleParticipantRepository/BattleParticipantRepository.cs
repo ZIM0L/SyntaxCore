@@ -34,5 +34,13 @@ namespace SyntaxCore.Repositories.BattleParticipantRepository
             _context.BattleParticipants.RemoveRange(participants);
             await _context.SaveChangesAsync();
         }
+
+        public async Task RemoveParticipantFromBattle(Guid battlePublicId, Guid playerId)
+        {
+            await _context.BattleParticipants
+               .Where(bp => bp.Battle.BattlePublicId == battlePublicId && bp.UserFK == playerId)
+               .ExecuteDeleteAsync();
+            await _context.SaveChangesAsync();
+        }
     }
 }

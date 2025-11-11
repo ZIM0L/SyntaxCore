@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.SignalR;
 using SyntaxCore.Application.GameSession.Commands.JoinGameSession;
 using SyntaxCore.Application.GameSession.Queries;
 using SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle;
+using SyntaxCore.Application.GameSession.Queries.LeaveBattle;
 using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.ErrorExceptions;
 using SyntaxCore.Models.BattleRelated;
+using System.Security.Claims;
 
 namespace SyntaxCore.Infrastructure.SignalRHub
 {
@@ -86,10 +88,21 @@ namespace SyntaxCore.Infrastructure.SignalRHub
             var request = new FetchQuestionsForBattleRequest(battlePublicIdToStart);
             await mediator.Send(request);
         }
-        public async Task RequestNextQuestion(Guid battlePublicIdToStart)
+        public async Task LeaveBattle(Guid battlePublicId)
         {
-            //var questionForBattleDto = await mediator.Send(request);
-            //await Clients.Group(battlePublicId.ToString()).SendAsync("ReceiveQuestion", questionForBattleDto);
+            var userIdClaimId = (Context.User?.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaimName = (Context.User?.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.Name)?.Value;
+
+            var request = new LeaveBattleRequest(
+                Guid.Parse(userIdClaimId!),
+                battlePublicId
+                );
+
+            await mediator.Send(request);
+
+            await Clients.Group(battlePublicId.ToString()).SendAsync("UserLeftBattle", $"User {userIdClaimName} has left the battle.");
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, battlePublicId.ToString());
+
         }
     }
 }

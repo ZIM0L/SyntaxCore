@@ -12,8 +12,6 @@ using System.Text.Json;
 namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
 {
     public class FetchQuestionsForBattleHandler(
-        IQuestionRepository questionRepository,
-        IQuestionOptionRepository questionOptionRepository,
         IBattleRepository battleRepository,
         IDistributedCache distributedCache) : IRequestHandler<FetchQuestionsForBattleRequest, List<QuestionForBattleDto>>
     {
