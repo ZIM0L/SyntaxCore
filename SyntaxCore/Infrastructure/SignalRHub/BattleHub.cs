@@ -44,25 +44,21 @@ namespace SyntaxCore.Infrastructure.SignalRHub
 
         public async Task JoinBattle(JoinBattleRequest joinBattleRequest)
         {
-                var request = new JoinBattleRequest(
-                   joinBattleRequest.UserId,
-                   joinBattleRequest.BattlePublicId,
-                   ContexRole.Player
-                   );
+            var request = new JoinBattleRequest(
+               joinBattleRequest.UserId,
+               joinBattleRequest.BattlePublicId,
+               ContexRole.Player
+               );
             try
             {
                 var players = await mediator.Send(request);
-                
-                await Groups.AddToGroupAsync(Context.ConnectionId, joinBattleRequest.BattlePublicId.ToString());
 
-                // Fetch questions for the battle to prepare
-                var test = new FetchQuestionsForBattleRequest(joinBattleRequest.BattlePublicId);
-                    await mediator.Send(test);
+                await Groups.AddToGroupAsync(Context.ConnectionId, joinBattleRequest.BattlePublicId.ToString());
 
                 await Clients.Groups(joinBattleRequest.BattlePublicId.ToString()).SendAsync("UserJoinedBattle", $"User {players.CurrentJoinedPlayerUserName} has joined the battle. Players count: {players.PlayersUserNames.Count}/{players.MaxParticipants}");
 
                 await Clients.Caller.SendAsync("JoinBattleSuccess", $"Joined battle {joinBattleRequest.BattlePublicId}");
-                
+
                 Console.WriteLine($"Connection {Context.ConnectionId} joined battle group {joinBattleRequest.BattlePublicId.ToString()}");
 
                 if (players.PlayersUserNames.Count == players.MaxParticipants)
@@ -72,11 +68,12 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                     await StartBattle(joinBattleRequest.BattlePublicId);
                 }
 
-            } catch(JoinBattleException ex)
+            }
+            catch (JoinBattleException ex)
             {
                 await Clients.Caller.SendAsync("HubError", ex.Message);
             }
-           
+
         }
         private async Task StartBattle(Guid battlePublicIdToStart)
         {
@@ -92,17 +89,24 @@ namespace SyntaxCore.Infrastructure.SignalRHub
         {
             var userIdClaimId = (Context.User?.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userIdClaimName = (Context.User?.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.Name)?.Value;
+            Console.WriteLine($"User {userIdClaimName} with ID {userIdClaimId} is leaving battle {battlePublicId}");
 
             var request = new LeaveBattleRequest(
-                Guid.Parse(userIdClaimId!),
-                battlePublicId
+                battlePublicId,
+                Guid.Parse(userIdClaimId!)
                 );
+            try
+            {
+                await mediator.Send(request);
 
-            await mediator.Send(request);
+                await Clients.Group(battlePublicId.ToString()).SendAsync("UserLeftBattle", $"User {userIdClaimName} has left the battle.");
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, battlePublicId.ToString());
+            }
+            catch (BattleException ex)
+            {
+                await Clients.Caller.SendAsync("HubError", ex.Message);
 
-            await Clients.Group(battlePublicId.ToString()).SendAsync("UserLeftBattle", $"User {userIdClaimName} has left the battle.");
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, battlePublicId.ToString());
-
+            }
         }
     }
 }
