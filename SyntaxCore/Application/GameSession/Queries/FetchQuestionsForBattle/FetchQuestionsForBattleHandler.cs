@@ -27,12 +27,13 @@ namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
             var FetchedQuestionsFromDB = await battleRepository.FetchAllQuestionsForBattle(request.BattlePublicId) ?? throw new ArgumentException("Battle couldn't start");
 
             await distributedCache.SetAsync(
-                request.BattlePublicId.ToString(),
+                $"Battle:{request.BattlePublicId.ToString()}",
                 JsonSerializer.SerializeToUtf8Bytes(FetchedQuestionsFromDB),
                 new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
-            });
+                }
+                );
 
             return FetchedQuestionsFromDB;
         }
