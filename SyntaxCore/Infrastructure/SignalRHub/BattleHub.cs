@@ -11,6 +11,7 @@ using SyntaxCore.Application.GameSession.Queries.LeaveBattle;
 using SyntaxCore.Constants;
 using SyntaxCore.Entities.BattleRelated;
 using SyntaxCore.Infrastructure.ErrorExceptions;
+using SyntaxCore.Interfaces;
 using SyntaxCore.Models.BattleRelated;
 using System.Security.Claims;
 using System.Text.Json;
@@ -119,13 +120,15 @@ namespace SyntaxCore.Infrastructure.SignalRHub
             var questions = await mediator.Send(new FetchQuestionsForBattleRequest(battlePublicId));
             var players = await mediator.Send(new FetchPlayersParticipantsGuidsRequest(battlePublicId));
 
-            var playersDictionaryScore = players.ToDictionary(players => players, _ => 0);
-            var playersDictionaryAnswers = players.ToDictionary(players => players, _ => false);
-
+            var playersDictionaryScore = players.Select(playerId => new PlayerRedisData
+            {
+                playerId = playerId,
+                score = 0,
+                isSubmitted = false
+            }).ToList();
 
             await redisService.SetAsync($"Battle:{battlePublicId}:CurrentIndex", JsonSerializer.SerializeToUtf8Bytes(0), options); // current question index
             await redisService.SetAsync($"Battle:{battlePublicId}:Scores", JsonSerializer.SerializeToUtf8Bytes(playersDictionaryScore), options); // scores
-            await redisService.SetAsync($"Battle:{battlePublicId}:Answers", JsonSerializer.SerializeToUtf8Bytes(playersDictionaryAnswers), options); // player answers for current question
 
             await SendNextQuestion(battlePublicId);
         }
@@ -146,65 +149,138 @@ namespace SyntaxCore.Infrastructure.SignalRHub
 
             var currentQuestion = allQuestions[currentIndex];
 
-            // reset answers for the new question
-            //await redisService.SetAsync(answersKey, JsonSerializer.SerializeToUtf8Bytes(new Dictionary<Guid, bool>()));
-
             await Clients.Group(battlePublicId.ToString()).SendAsync("ReceiveQuestion", new 
             {
                 QuestionText = allQuestions[currentIndex].QuestionText,
-                AllAnswers = allQuestions[currentIndex].AllAnswers.Keys,
+                AllAnswers = allQuestions[currentIndex].AllAnswers.Keys.ToList(),
                 TimeForAnswerInSeconds = allQuestions[currentIndex].TimeForAnswerInSeconds
             });
         }
-        //public async Task SubmitAnswer(Guid battlePublicId, List<string> selectedAnswer)
-        //{
-        //    var userIdClaimId = (Context.User?.Identity as ClaimsIdentity)!.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        public async Task SubmitAnswer(Guid battlePublicId, List<string> selectedAnswer)
+        {
+            selectedAnswer.ForEach(x =>
+            {
+                Console.WriteLine(x);
+            });
+            var userIdClaimId = (Context.User?.Identity as ClaimsIdentity)!
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? throw new ForbiddenException("Forbbiden action");
 
-        //    var indexKey = $"Battle:{battlePublicId}:CurrentIndex";
-        //    var scoresKey = $"Battle:{battlePublicId}:Scores";
-        //    var answersKey = $"Battle:{battlePublicId}:Answers";
+            var userId = Guid.Parse(userIdClaimId);
 
-        //    var currentIndex = JsonSerializer.Deserialize<int>(await redisService.GetAsync(indexKey));
-        //    var allQuestions = JsonSerializer.Deserialize<List<QuestionForBattleDto>>(await redisService.GetAsync($"Battle:{battlePublicId.ToString()}"));
-        //    var question = allQuestions![currentIndex];
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20)
+            };
 
-        //    // Sprawdź poprawność
-        //    selectedAnswer.ForEach(answer =>
-        //    {
-        //        if (!question.AllAnswers.TryGetValue(answer, out bool correct) && correct);
-        //        {
-        //            throw new ArgumentException("Invalid answer submitted");
-        //        }
-        //    });
+            var indexKey = $"Battle:{battlePublicId}:CurrentIndex";
+            var scoresKey = $"Battle:{battlePublicId}:Scores";
 
-        //    var isCorrect = question.AllAnswers.TryGetValue(selectedAnswer, out bool correct) && correct;
+            int currentIndex = JsonSerializer.Deserialize<int>(await redisService.GetAsync(indexKey));
 
-        //    // Zapisz odpowiedź gracza
-        //    var answers = await redisService.GetAsync<Dictionary<Guid, bool>>(answersKey);
-        //    answers[userId] = isCorrect;
-        //    await redisService.SetAsync(answersKey, answers);
+            var allQuestions = JsonSerializer.Deserialize<List<QuestionForBattleDto>>(
+                await redisService.GetAsync($"Battle:{battlePublicId}")
+            ) ?? throw new BattleException("Internal server error");
 
-        //    // Zaktualizuj punkty
-        //    var scores = await redisService.GetAsync<Dictionary<Guid, int>>(scoresKey);
-        //    if (isCorrect)
-        //    {
-        //        if (!scores.ContainsKey(userId)) scores[userId] = 0;
-        //        scores[userId]++;
-        //        await redisService.SetAsync(scoresKey, scores);
-        //    }
+            var question = allQuestions[currentIndex];
 
-        //    // Sprawdź czy wszyscy już odpowiedzieli
-        //    var connectedUsers = // np. lista graczy z bitwy (pobierz z repo lub redis)
-        //    if (answers.Count >= connectedUsers.Count)
-        //        {
-        //            await redisService.SetAsync(indexKey, currentIndex + 1);
-        //            await SendNextQuestion(battlePublicId);
-        //        }
-        //}
+            // --- VALIDACJA ODPOWIEDZI ---
+
+            foreach (var answer in selectedAnswer)
+            {
+                if (!question.AllAnswers.ContainsKey(answer))
+                    throw new BattleException("Invalid answer submitted");
+            }
+
+            bool isCorrect =
+                question.AllAnswers.Where(x => x.Value).Select(x => x.Key).OrderBy(x => x)
+                .SequenceEqual(selectedAnswer.OrderBy(x => x));
+
+            // --- ZAKTUALIZUJ PUNKTY ---
+            var scoreRaw = await redisService.GetAsync(scoresKey);
+            var scores = JsonSerializer.Deserialize<List<PlayerRedisData>>(scoreRaw) ?? throw new BattleException("Internal server error");
+
+            if(scores.SingleOrDefault(p => p.playerId == userId) is null)
+                throw new BattleException("Internal server error");
+
+            scores.SingleOrDefault(p => p.playerId == userId)!.isSubmitted = true;
+
+            if (isCorrect)
+                scores.SingleOrDefault(p => p.playerId == userId)!.score++;
+
+            await redisService.SetAsync(
+                scoresKey,
+                JsonSerializer.SerializeToUtf8Bytes(scores),
+                options
+            );
+
+            // --- CZY WSZYSCY ODPOWIEDZIELI? ---
+
+            if (!scores.Any(x => x.isSubmitted == false))
+            {
+                // przejdź do kolejnego pytania
+                await redisService.SetAsync(
+                    indexKey,
+                    JsonSerializer.SerializeToUtf8Bytes(currentIndex + 1),
+                    options
+                );
+
+                // reset odpowiedzi submitted
+                scores.ForEach(p => p.isSubmitted = false);
+
+                await redisService.SetAsync(
+                    scoresKey,
+                    JsonSerializer.SerializeToUtf8Bytes(scores),
+                    options
+                );
+
+                await SendNextQuestion(battlePublicId);
+            }
+        }
+
 
         private async Task SendFinalResults(Guid battlePublicId)
         {
-            throw new NotImplementedException();
+            var scoresKey = $"Battle:{battlePublicId}:Scores";
+            var indexKey = $"Battle:{battlePublicId}:CurrentIndex";
+
+            // Pobranie końcowych wyników
+            var scoresBytes = await redisService.GetAsync(scoresKey);
+            if (scoresBytes == null) throw new BattleException("Scores not found");
+
+            var scores = JsonSerializer.Deserialize<List<PlayerRedisData>>(scoresBytes)
+                ?? throw new BattleException("Scores deserialization failed");
+
+            // Sortowanie graczy według punktów malejąco
+            var finalResults = scores
+                .OrderByDescending(p => p.score)
+                .Select(p => new
+                {
+                    PlayerId = p.playerId,
+                    Score = p.score
+                })
+                .ToList();
+
+            // Wysłanie wyników do wszystkich w grupie
+            await Clients.Group(battlePublicId.ToString()).SendAsync("BattleEnded", new
+            {
+                BattleId = battlePublicId,
+                Results = finalResults
+            });
+
+            // Opcjonalnie: można też wyczyścić Redis dla tej bitwy
+            await redisService.RemoveAsync(scoresKey);
+            await redisService.RemoveAsync(indexKey);
+            await redisService.RemoveAsync($"Battle:{battlePublicId}:Answers");
+            await redisService.RemoveAsync($"Battle:{battlePublicId}");
         }
+
+    }
+
+    internal class PlayerRedisData
+    {
+        public Guid playerId { get; set; }
+        public int score { get; set; }
+        public bool isSubmitted { get; set; }
     }
 }
