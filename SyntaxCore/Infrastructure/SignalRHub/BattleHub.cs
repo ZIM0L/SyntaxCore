@@ -184,7 +184,6 @@ namespace SyntaxCore.Infrastructure.SignalRHub
 
             var question = allQuestions[currentIndex];
 
-            // --- VALIDACJA ODPOWIEDZI ---
 
             foreach (var answer in selectedAnswer)
             {
@@ -196,7 +195,6 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 question.AllAnswers.Where(x => x.Value).Select(x => x.Key).OrderBy(x => x)
                 .SequenceEqual(selectedAnswer.OrderBy(x => x));
 
-            // --- ZAKTUALIZUJ PUNKTY ---
             var scoreRaw = await redisService.GetAsync(scoresKey);
             var scores = JsonSerializer.Deserialize<List<PlayerRedisData>>(scoreRaw) ?? throw new BattleException("Internal server error");
 
@@ -214,18 +212,15 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 options
             );
 
-            // --- CZY WSZYSCY ODPOWIEDZIELI? ---
 
             if (!scores.Any(x => x.isSubmitted == false))
             {
-                // przejdź do kolejnego pytania
                 await redisService.SetAsync(
                     indexKey,
                     JsonSerializer.SerializeToUtf8Bytes(currentIndex + 1),
                     options
                 );
 
-                // reset odpowiedzi submitted
                 scores.ForEach(p => p.isSubmitted = false);
 
                 await redisService.SetAsync(
@@ -244,14 +239,12 @@ namespace SyntaxCore.Infrastructure.SignalRHub
             var scoresKey = $"Battle:{battlePublicId}:Scores";
             var indexKey = $"Battle:{battlePublicId}:CurrentIndex";
 
-            // Pobranie końcowych wyników
             var scoresBytes = await redisService.GetAsync(scoresKey);
             if (scoresBytes == null) throw new BattleException("Scores not found");
 
             var scores = JsonSerializer.Deserialize<List<PlayerRedisData>>(scoresBytes)
                 ?? throw new BattleException("Scores deserialization failed");
 
-            // Sortowanie graczy według punktów malejąco
             var finalResults = scores
                 .OrderByDescending(p => p.score)
                 .Select(p => new
@@ -261,14 +254,12 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 })
                 .ToList();
 
-            // Wysłanie wyników do wszystkich w grupie
             await Clients.Group(battlePublicId.ToString()).SendAsync("BattleEnded", new
             {
                 BattleId = battlePublicId,
                 Results = finalResults
             });
 
-            // Opcjonalnie: można też wyczyścić Redis dla tej bitwy
             await redisService.RemoveAsync(scoresKey);
             await redisService.RemoveAsync(indexKey);
             await redisService.RemoveAsync($"Battle:{battlePublicId}:Answers");
