@@ -117,7 +117,7 @@ namespace SyntaxCore.Infrastructure.SignalRHub
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20)
             };
 
-            var questions = await mediator.Send(new FetchQuestionsForBattleRequest(battlePublicId));
+            await mediator.Send(new FetchQuestionsForBattleRequest(battlePublicId));
             var players = await mediator.Send(new FetchPlayersParticipantsGuidsRequest(battlePublicId));
 
             var playersDictionaryScore = players.Select(playerId => new PlayerRedisData
@@ -136,10 +136,9 @@ namespace SyntaxCore.Infrastructure.SignalRHub
         private async Task SendNextQuestion(Guid battlePublicId)
         {
             var indexKey = $"Battle:{battlePublicId}:CurrentIndex"; // current question index
-            var answersKey = $"Battle:{battlePublicId}:Answers";
 
             var currentIndex = JsonSerializer.Deserialize<int>(await redisService.GetAsync(indexKey));
-            var allQuestions = JsonSerializer.Deserialize<List<QuestionForBattleDto>>(await redisService.GetAsync($"Battle:{battlePublicId.ToString()}"));
+            var allQuestions = JsonSerializer.Deserialize<List<QuestionForBattleDto>>(await redisService.GetAsync($"Battle:{battlePublicId.ToString()}:Questions"));
 
             if (currentIndex >= allQuestions!.Count)
             {
@@ -263,7 +262,7 @@ namespace SyntaxCore.Infrastructure.SignalRHub
             await redisService.RemoveAsync(scoresKey);
             await redisService.RemoveAsync(indexKey);
             await redisService.RemoveAsync($"Battle:{battlePublicId}:Answers");
-            await redisService.RemoveAsync($"Battle:{battlePublicId}");
+            await redisService.RemoveAsync($"Battle:{battlePublicId}:Questions");
         }
 
     }

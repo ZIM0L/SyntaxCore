@@ -27,7 +27,7 @@ namespace SyntaxCore.Application.GameSession.Queries.FetchQuestionsForBattle
             var FetchedQuestionsFromDB = await battleRepository.FetchAllQuestionsForBattle(request.BattlePublicId) ?? throw new ArgumentException("Battle couldn't start");
 
             await distributedCache.SetAsync(
-                $"Battle:{request.BattlePublicId.ToString()}",
+                $"Battle:{request.BattlePublicId.ToString()}:Questions",
                 JsonSerializer.SerializeToUtf8Bytes(FetchedQuestionsFromDB),
                 new DistributedCacheEntryOptions
                 {
