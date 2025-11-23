@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using SyntaxCore.Entities.UserRelated;
+using SyntaxCore.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using SyntaxCore.Entities;
-using SyntaxCore.Interfaces;
 
-namespace SyntaxCore.Infrastructure;
+namespace SyntaxCore.Infrastructure.Implementations;
 public class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _configuration;
@@ -20,28 +20,33 @@ public class JwtTokenService : IJwtTokenService
     {
         var claims = new[]
         {
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-            new Claim("level", user.Level.ToString()),  
+            new Claim("level", user.Level.ToString()),
+            new Claim("role", user.Role ?? "Player")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:AccessTokenKey")!));
 
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
             issuer: _configuration.GetValue<string>("JWT:Issuer"),
             audience: _configuration.GetValue<string>("JWT:Audience"),
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Int32.Parse(_configuration.GetValue<string>("JWT:AccessTokenExpiresMinutes")!)), 
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration.GetValue<string>("JWT:AccessTokenExpiresMinutes")!)), 
             signingCredentials: credentials
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken(string token)
+    public string GenerateRefreshToken()
     {
-        throw new NotImplementedException();
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

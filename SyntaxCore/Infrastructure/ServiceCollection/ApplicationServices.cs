@@ -1,8 +1,9 @@
-﻿using SyntaxCore.Interfaces;
+﻿using SyntaxCore.Infrastructure.Implementations;
+using SyntaxCore.Interfaces;
 
-namespace SyntaxCore.Infrastructure
+namespace SyntaxCore.Infrastructure.ServiceCollection
 {
-    public static class DependencyInjection
+    public static class ApplicationServices
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {       

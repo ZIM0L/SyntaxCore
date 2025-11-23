@@ -1,4 +1,5 @@
 # .NET
+SQL/
 bin/
 obj/
 *.user
@@ -6,13 +7,19 @@ obj/
 *.suo
 *.userosscache
 *.sln.docstates
+SignalRTestConsole
+
+# Migrations
+Migrations/
 
 # Angular / Node
 node_modules/
 dist/
 tmp/
 npm-debug.log*
-
+SyntaxCore_Angular/README.md
+SyntaxCore_Angular/CHANGELOG.md
+SyntaxCore_Angular/.editorconfig
 # Environment
 .env
 *.env

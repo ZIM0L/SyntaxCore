@@ -1,45 +1,59 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SyntaxCore.Entities;
+using SyntaxCore.Application.Authentication.Commands.RefreshToken;
+using SyntaxCore.Application.Authentication.Commands.Register;
+using SyntaxCore.Application.Authentication.Queries.Login;
 using SyntaxCore.Interfaces;
-using SyntaxCore.Models;
+using SyntaxCore.Models.UserRelated;
 
 namespace SyntaxCore.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase
 {
     private readonly IJwtTokenService _jwtTokenService;
-    private static readonly User _user = new();
-    public AuthController(IJwtTokenService jwtTokenService)
+    private readonly IMediator _mediator;
+
+    public AuthController(IJwtTokenService jwtTokenService, IMediator mediator)
     {
         _jwtTokenService = jwtTokenService;
+        _mediator = mediator;
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] UserDto userDto)
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
     {
-        var hashedPassword = new PasswordHasher<User>()
-            .HashPassword(_user, userDto.Password);
-        
-        _user.Username = userDto.Username;
-        _user.PasswordHash = hashedPassword;
+        var request = new RegisterUserRequest(registerUserDto.Username, registerUserDto.Password, registerUserDto.Email);
+        var result = await _mediator.Send(request);
 
-        return Ok(_user);
+        if (result.Equals(String.Empty))
+        {
+            return BadRequest("User already exists.");
+        }
+        return Ok(result);
     }
     [HttpPost("login")]
-    public IActionResult Login([FromBody] UserDto userDto)
+    [AllowAnonymous]
+    public IActionResult Login([FromBody] LoginUserDto loginUserDto)
      {
-         var result = new PasswordHasher<User>().VerifyHashedPassword(_user, _user.PasswordHash, userDto.Password);
-         if (result == PasswordVerificationResult.Failed)
-         {
-             return Unauthorized();
-         }
-
-         var token = _jwtTokenService.GenerateToken(_user);
-
-         return Ok(token);
+        var request = new LoginUserRequest(loginUserDto.Email, loginUserDto.Password);
+        var token = _mediator.Send(request).Result;
+        if (token.AccessToken.Equals(string.Empty))
+        {
+            return Unauthorized("Invalid credentials.");
+        }
+        return Ok(token);
      }
+    [HttpPost("refresh-token")]
+    [AllowAnonymous]
+    public async Task<IActionResult> TestAuth([FromBody] RefreshTokenDto refreshTokenDto)
+    {
+        var request = new RefreshTokenRequest(refreshTokenDto.RefreshToken);
+        var result = await _mediator.Send(request);
+        return Ok(result);
+    }
+
 }

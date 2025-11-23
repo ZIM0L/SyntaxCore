@@ -1,0 +1,35 @@
+﻿using SyntaxCore.Entities.BattleRelated;
+
+namespace SyntaxCore.Repositories.BattleParticipantRepository
+{
+    public interface IBattleParticipantRepository 
+    {
+        /// <summary>
+        /// Creates a new battle participant record in the database.
+        /// </summary>
+        /// <param name="participant"></param>
+        /// <returns></returns>
+        public Task AddBattleParticipantAsync(BattleParticipant participant);
+        /// <summary>
+        /// Gets all battle participants for the given battles
+        /// </summary>
+        public Task<List<BattleParticipant>> GetParticipantsByBattles(List<Battle> battles);
+        /// <summary>
+        /// Gets all battle participants count for the given battle id
+        /// <paramref name="battleid"/>
+        /// <returns>Returns list of participant of given battle id</returns>
+        /// </summary>
+        public Task<List<BattleParticipant>?> GetParticipantsByBattleId(Guid battleid);
+        /// <summary>
+        /// Deletes battle participants by battle id.
+        /// </summary>
+        /// <param name="battleId"></param>
+        public Task DeleteBattleParticipants(Guid battleId);
+        /// <summary>
+        /// Removes a participant from a battle based on the public battle ID.
+        /// </summary>
+        /// <param name="publicBattleId"></param>
+        /// <returns></returns>
+        public Task RemoveParticipantFromBattle(Guid publicBattleId, Guid playerId);
+    }
+}
