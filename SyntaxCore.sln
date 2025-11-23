@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementy rozwiązania", "El
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxCore_SignalRTest", "..\SyntaxCore_SignalRTest\SyntaxCore_SignalRTest.csproj", "{277D83F2-F515-43D0-8910-BEFD8DC4F94B}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "SyntaxCore_Angular", "SyntaxCore_Angular\SyntaxCore_Angular.esproj", "{70152F4B-C0E0-D9BF-512F-7A643800F9D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,24 @@ Global
 		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x64.Build.0 = Release|Any CPU
 		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x86.ActiveCfg = Release|Any CPU
 		{277D83F2-F515-43D0-8910-BEFD8DC4F94B}.Release|x86.Build.0 = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|x64.Build.0 = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|x86.Build.0 = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|x64.ActiveCfg = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|x64.Build.0 = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|x64.Deploy.0 = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|x86.ActiveCfg = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|x86.Build.0 = Release|Any CPU
+		{70152F4B-C0E0-D9BF-512F-7A643800F9D5}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

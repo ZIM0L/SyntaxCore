@@ -1,0 +1,5 @@
+@use "connection";
+
+body {
+  background-color: connection.$backGroundColor
+}

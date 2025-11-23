@@ -1,0 +1,22 @@
+﻿[
+  {
+    "outputFile": "src/sass/test.css",
+    "inputFile": "src/sass/test.scss"
+  },
+  {
+    "outputFile": "src/sass/variables.css",
+    "inputFile": "src/sass/variables.scss"
+  },
+  {
+    "outputFile": "src/sass/mixins.css",
+    "inputFile": "src/sass/mixins.scss"
+  },
+  {
+    "outputFile": "src/sass/_index.css",
+    "inputFile": "src/sass/_index.scss"
+  },
+  {
+    "outputFile": "src/sass/Global.css",
+    "inputFile": "src/sass/Global.scss"
+  }
+]
