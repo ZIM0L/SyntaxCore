@@ -18,5 +18,9 @@
   {
     "outputFile": "src/sass/Global.css",
     "inputFile": "src/sass/Global.scss"
+  },
+  {
+    "outputFile": "src/sass/_console.css",
+    "inputFile": "src/sass/_console.scss"
   }
 ]

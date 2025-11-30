@@ -1,11 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommandHistoryService } from '../Services/command-history/commandHistory.service';
+import { DeviceInfoService } from '../Services/device-info/deviceInfo.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'main-console',
   standalone: true,
   templateUrl: './main-console.component.html',
-  styleUrl: './main-console.component.css'
+  styleUrl: '../../sass/_console.css',
+  imports: [FormsModule],
 })
 export class MainConsoleComponent {
+  prompt = '';
+  deviceInfo = '';
+commandService = inject(CommandHistoryService);
+deviceInfoService = inject(DeviceInfoService);
+
+isLoading = true;
+
+submitPrompt() {
+  if (this.prompt.trim() === '') {
+    return;
+  }
+  this.addDiv();
+}
+
+addDiv() {
+  this.commandService.addCommand(this.prompt);
+}
+getPreviusCommand() {
+  this.prompt = this.commandService.getPreviousCommand() ?? '';
+}
+getNextCommand() {
+  this.prompt = this.commandService.getNextCommand() ?? '';
+}
+
+ngOnInit() {
+  this.deviceInfo = this.deviceInfoService.getDeviceInfo();
+  this.isLoading = false;
+}
 
 }

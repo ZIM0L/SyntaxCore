@@ -1,0 +1,74 @@
+@use "connection";
+
+.terminal {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  max-height: 20vh;
+  background: connection.$consoleColor;
+  color: #e5e5e5;
+  font-family: "Fira Mono", monospace;
+  border-radius: 5px;
+  // BORDER GRADIENT
+  $border: 2px;
+  border: solid $border transparent;
+  background-clip: padding-box;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    margin: -$border;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #5170ff, #ffa3ff);
+  }
+
+  .output {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    white-space: pre-wrap;
+    line-height: 1.4;
+    color: #c7c7c7;
+  }
+
+  .input-line {
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+    max-height: 17vh;
+    text-align: left;
+    overflow-y: scroll;
+
+    // Chrome, Edge, Safari
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+
+    .prompt {
+      margin-right: 5px;
+      color: connection.$promptColor;
+      font-weight: bold;
+    }
+
+    .cmdline {
+      flex: 1;
+      color: #e5e5e5;
+      min-height: 20px;
+      outline: none;
+      background: transparent;
+      border: none;
+      pointer-events: auto;
+    }
+  }
+}

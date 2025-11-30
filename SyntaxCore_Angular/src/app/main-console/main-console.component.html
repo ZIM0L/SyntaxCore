@@ -1,1 +1,16 @@
-<p>main-console works!</p>
+<div class="terminal" #terminal tabindex="0" aria-label="Pseudo terminal">
+  <div class="input-line">
+    @for (item of commandService.getHistory(); track $index) {
+    <div>{{item}}</div>
+    }
+    @if (isLoading) {
+      <div>
+        ...loading
+      </div>
+    }
+    <div class="prompt">
+      <span>{{deviceInfo}}</span>
+      <input (keyup.enter)="submitPrompt(); prompt=''" (keyup.arrowup)="getPreviusCommand()" (keyup.arrowdown)="getNextCommand()" [(ngModel)]="prompt" #cmd class="cmdline" contenteditable="true" spellcheck="false" />
+    </div>
+  </div>
+</div>
