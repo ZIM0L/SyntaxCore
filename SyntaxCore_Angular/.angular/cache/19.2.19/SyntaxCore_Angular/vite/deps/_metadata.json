@@ -1,34 +1,40 @@
 {
-  "hash": "6221f261",
-  "configHash": "e58fc4d8",
-  "lockfileHash": "4c37b4c5",
-  "browserHash": "42f7a962",
+  "hash": "78f3d686",
+  "configHash": "06dae281",
+  "lockfileHash": "042c0721",
+  "browserHash": "40823a28",
   "optimized": {
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "8581d9b9",
+      "fileHash": "ca1a3829",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "a986db82",
+      "fileHash": "db358067",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "19260c6d",
+      "fileHash": "d412a696",
+      "needsInterop": false
+    },
+    "@ngrx/store": {
+      "src": "../../../../../../node_modules/@ngrx/store/fesm2022/ngrx-store.mjs",
+      "file": "@ngrx_store.js",
+      "fileHash": "9adde0ea",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-RLFVA2IY": {
-      "file": "chunk-RLFVA2IY.js"
+    "chunk-7VM4XGJ2": {
+      "file": "chunk-7VM4XGJ2.js"
     },
-    "chunk-BNV2BS6S": {
-      "file": "chunk-BNV2BS6S.js"
+    "chunk-LAYBLWJG": {
+      "file": "chunk-LAYBLWJG.js"
     }
   }
 }
