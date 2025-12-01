@@ -1,0 +1,73 @@
+﻿:host {
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+}
+
+.app-name {
+  flex: 0 0 10%;
+  font-size: 2rem;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.logo {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.logo-circles {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.circles {
+  position: relative;
+}
+
+.circle {
+  width: 34rem;
+  height: 34rem;
+  border-radius: 50%;
+  background-color: #5170ff;
+  position: absolute;
+  z-index: -1;
+}
+
+.circle1 {
+  top: -14rem;
+  left: -17rem;
+  background: linear-gradient(135deg, #5170ff, #ffa3ff);
+}
+
+.circle2 {
+  top: -12rem;
+  left: -17rem;
+  background-color: #17151e;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.sub-text {
+  font-size: 1rem;
+  color: #c7c7c7;
+}

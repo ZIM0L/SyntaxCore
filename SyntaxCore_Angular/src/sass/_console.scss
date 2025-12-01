@@ -1,15 +1,17 @@
 @use "connection";
+:host {
+  @include connection.flexCenter(row);
+}
 
 .terminal {
   position: relative;
   box-sizing: border-box;
-  width: 100%;
   padding: 10px;
   max-height: 20vh;
   background: connection.$consoleColor;
-  color: #e5e5e5;
-  font-family: "Fira Mono", monospace;
   border-radius: 5px;
+  min-width: 350px;
+  width: 40vw;
   // BORDER GRADIENT
   $border: 2px;
   border: solid $border transparent;
@@ -24,6 +26,7 @@
     border-radius: inherit;
     background: linear-gradient(135deg, #5170ff, #ffa3ff);
   }
+
 
   .output {
     flex: 1;
@@ -41,7 +44,7 @@
     max-height: 17vh;
     text-align: left;
     overflow-y: scroll;
-
+    font-weight: bold;
     // Chrome, Edge, Safari
     &::-webkit-scrollbar {
       width: 0;
@@ -56,18 +59,20 @@
     scrollbar-color: transparent transparent;
 
     .prompt {
-      margin-right: 5px;
+      flex-wrap: nowrap;
       color: connection.$promptColor;
-      font-weight: bold;
     }
 
     .cmdline {
+      margin-left: 5px;
       flex: 1;
+      min-width: 0;
       color: #e5e5e5;
       min-height: 20px;
       outline: none;
       background: transparent;
       border: none;
+      font-weight: bold;
       pointer-events: auto;
     }
   }

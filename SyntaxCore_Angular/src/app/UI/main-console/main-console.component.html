@@ -10,7 +10,14 @@
     }
     <div class="prompt">
       <span>{{deviceInfo}}</span>
-      <input (keyup.enter)="submitPrompt(); prompt=''" (keyup.arrowup)="getPreviusCommand()" (keyup.arrowdown)="getNextCommand()" [(ngModel)]="prompt" #cmd class="cmdline" contenteditable="true" spellcheck="false" />
+      <input id="cmd" autofocus
+             (keydown)="onKeyPress()"
+             (keyup.enter)="submitPrompt(); prompt=''"
+             (keyup.arrowup)="getPreviusCommand()"
+             (keyup.arrowdown)="getNextCommand()"
+             [(ngModel)]="prompt"
+             #cmd class="cmdline" contenteditable="true" spellcheck="false"
+      />
     </div>
   </div>
 </div>

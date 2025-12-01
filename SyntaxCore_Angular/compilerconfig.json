@@ -22,5 +22,13 @@
   {
     "outputFile": "src/sass/_console.css",
     "inputFile": "src/sass/_console.scss"
+  },
+  {
+    "outputFile": "src/sass/_introPage.css",
+    "inputFile": "src/sass/_introPage.scss"
+  },
+  {
+    "outputFile": "src/sass/_intro-page.css",
+    "inputFile": "src/sass/_intro-page.scss"
   }
 ]

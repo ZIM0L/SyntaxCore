@@ -501,10 +501,10 @@ import {
   ɵɵtwoWayBindingSet,
   ɵɵtwoWayListener,
   ɵɵtwoWayProperty,
-  ɵɵvalidateIframeAttribute,
+  ɵɵvalidateAttribute,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-} from "./chunk-KK3KO2DM.js";
+} from "./chunk-BNV2BS6S.js";
 export {
   ANIMATION_MODULE_TYPE,
   APP_BOOTSTRAP_LISTENER,
@@ -1010,7 +1010,7 @@ export {
   ɵɵtwoWayBindingSet,
   ɵɵtwoWayListener,
   ɵɵtwoWayProperty,
-  ɵɵvalidateIframeAttribute,
+  ɵɵvalidateAttribute,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
 };

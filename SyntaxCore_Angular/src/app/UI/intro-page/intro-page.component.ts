@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'intro-page',
   standalone: true,
   templateUrl: './intro-page.component.html',
-  styleUrl: './intro-page.component.css'
+  styleUrl: '../../../sass/_intro-page.css'
 })
 export class IntroPageComponent {
 

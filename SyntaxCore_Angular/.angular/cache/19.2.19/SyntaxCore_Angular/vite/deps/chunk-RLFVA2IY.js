@@ -58,7 +58,7 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-KK3KO2DM.js";
+} from "./chunk-BNV2BS6S.js";
 
 // node_modules/@angular/common/fesm2022/dom_tokens-rA0ACyx7.mjs
 var DOCUMENT = new InjectionToken(ngDevMode ? "DocumentToken" : "");
@@ -3676,7 +3676,7 @@ var PlatformNavigation = class _PlatformNavigation {
 })();
 
 // node_modules/@angular/common/fesm2022/common.mjs
-var VERSION = new Version("19.2.15");
+var VERSION = new Version("19.2.17");
 var ViewportScroller = class _ViewportScroller {
   // De-sugared tree-shakable injection
   // See #23917
@@ -4959,9 +4959,9 @@ export {
 @angular/common/fesm2022/platform_navigation-B45Jeakb.mjs:
 @angular/common/fesm2022/common.mjs:
   (**
-   * @license Angular v19.2.15
+   * @license Angular v19.2.17
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-PFA7CYBS.js.map
+//# sourceMappingURL=chunk-RLFVA2IY.js.map
